@@ -1,2 +1,15 @@
-icon: icon.png
-deploy_params: deploy_params.yml
+# LazyCat 构建配置
+buildscript: echo "Build skipped - using Docker image deployment"
+
+manifest: ./lzc-manifest.yml
+contentdir: ./content
+pkgout: ./lpk
+icon: ./lzc-icon.png
+
+# compose_override: privileged 不会自动挂载 docker.sock，
+# 需要通过 compose_override 显式挂载系统路径
+compose_override:
+  services:
+    hermes-webui:
+      volumes:
+        - /data/playground/docker.sock:/var/run/docker.sock
