@@ -1,7 +1,9 @@
-# lzc-manifest.yml — LazyCat LPK v2 manifest
-# Hermes Studio with Nowledge Mem, whole-home persistence.
-
 manifestVersion: 2
+package: hermes-studio
+
+application:
+  name: hermes-studio
+  subdomain: hermes-studio
 
 services:
   hermes-studio:
@@ -11,7 +13,6 @@ services:
       gid: 1000
 
     binds:
-      # Whole-home persistence — survives container restarts
       - /lzcapp/var/home:/home/agent
 
     environment:
@@ -19,7 +20,6 @@ services:
       - HERMES_HOME=/home/agent/.hermes
       - HERMES_WEB_UI_HOME=/home/agent/.hermes-web-ui
       - PATH=/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      # Let Hermes skip prompts in container
       - HERMES_YOLO_MODE=1
 
     ports:

@@ -1,15 +1,7 @@
-# lzc-build.yml — LazyCat LPK v2 build configuration
-# Defines the embedded Docker image for Hermes Studio + nmem.
-
-manifest:
-  author: KingBoyAndGirl
-  architecture: linux/amd64
-  description: Hermes Studio with embedded Nowledge Mem (nmem)
-
 images:
   hermes-studio:
     dockerfile: Dockerfile.lzcapp
     context: .
-    # Prevent rebuild if upstream image hasn't changed
+    builder: local
     upstream-match:
       - ekkoye8888/hermes-web-ui

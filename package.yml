@@ -1,6 +1,6 @@
 name: hermes-studio
 title: Hermes Studio + Nowledge Mem
-version: 0.1.0
+version: 0.0.1
 description: Hermes Studio with embedded Nowledge Mem (nmem) for persistent memory across container restarts.
 author: KingBoyAndGirl
 icon: icon.png
