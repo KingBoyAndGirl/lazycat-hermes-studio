@@ -29,4 +29,3 @@ services:
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/var/home:/home/agent
-      - /var/run/docker.sock:/var/run/docker.sock
