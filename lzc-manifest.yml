@@ -1,3 +1,5 @@
+package: hermes-studio
+
 application:
   subdomain: hermes-studio
   privileged: true
@@ -16,7 +18,8 @@ application:
 
 services:
   hermes-webui:
-    image: ekkoye8888/hermes-web-ui:latest
+    image: embed:hermes-studio
+    setup_script: /opt/setup-once.sh
     environment:
       - PORT={{ .U.port }}
       - HERMES_HOME=/home/agent/.hermes
@@ -26,5 +29,5 @@ services:
       - PATH=/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
-      - /lzcapp/var/hermes:/home/agent/.hermes
-      - /lzcapp/var/hermes-web-ui:/home/agent/.hermes-web-ui
+      - /lzcapp/var/home:/home/agent
+      - /var/run/docker.sock:/var/run/docker.sock
