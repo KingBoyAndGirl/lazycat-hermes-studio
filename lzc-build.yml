@@ -1,10 +1,2 @@
 icon: icon.png
 deploy_params: deploy_params.yml
-
-images:
-  hermes-studio:
-    dockerfile: Dockerfile
-    context: .
-    builder: local
-    upstream-match:
-      - ekkoye8888/hermes-web-ui

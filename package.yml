@@ -1,7 +1,7 @@
 package: community.lazycat.app.hermes-studio
 version: 0.0.1
 name: Hermes Studio
-description: Hermes AI Agent Web UI with persistent ~/ for tools (nmem, etc.)
+description: Hermes AI Agent Web UI with persistent home directory
 author: KingBoyAndGirl
 homepage: https://github.com/KingBoyAndGirl/lazycat-hermes-studio
 min_os_version: 1.5.2
@@ -11,8 +11,7 @@ locales:
     description: Hermes AI 智能体 Web 管理界面，持久化 home 目录
   en:
     name: Hermes Studio
-    description: >-
-      Hermes AI Agent Web UI with persistent home directory for installed tools
+    description: Hermes AI Agent Web UI with persistent home directory
 permissions:
   required:
     - net.internet

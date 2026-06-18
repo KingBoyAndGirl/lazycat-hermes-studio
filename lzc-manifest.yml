@@ -18,8 +18,7 @@ application:
 
 services:
   hermes-webui:
-    image: embed:hermes-studio
-    setup_script: /opt/setup-once.sh
+    image: ekkoye8888/hermes-web-ui:latest
     environment:
       - PORT={{ .U.port }}
       - HERMES_HOME=/home/agent/.hermes
