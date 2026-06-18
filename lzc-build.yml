@@ -1,6 +1,5 @@
 # LazyCat 构建配置
 buildscript: echo "Build skipped - using Docker image deployment"
-
 manifest: ./lzc-manifest.yml
 contentdir: ./content
 pkgout: ./lpk
