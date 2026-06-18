@@ -5,6 +5,11 @@ contentdir: ./content
 pkgout: ./lpk
 icon: ./lzc-icon.png
 
+images:
+  hermes-webui:
+    dockerfile: images/Dockerfile
+    upstream-match: ekkoye8888
+
 compose_override:
   services:
     hermes-webui:
