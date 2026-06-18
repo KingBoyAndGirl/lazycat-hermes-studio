@@ -1,0 +1,11 @@
+name: hermes-studio
+title: Hermes Studio + Nowledge Mem
+version: 0.1.0
+description: Hermes Studio with embedded Nowledge Mem (nmem) for persistent memory across container restarts.
+author: KingBoyAndGirl
+icon: icon.png
+home: https://github.com/KingBoyAndGirl/lazycat-hermes-studio
+
+permissions:
+  - network
+  - persistent-storage

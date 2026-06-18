@@ -1,0 +1,27 @@
+FROM ekkoye8888/hermes-web-ui:latest
+
+# ── Install nmem CLI into the Hermes venv (always available in PATH) ──
+USER root
+RUN /opt/hermes/.venv/bin/pip install --no-cache-dir \
+      nmem-cli \
+      nowledge-graph-server \
+      uvicorn \
+    && ln -sf /opt/hermes/.venv/bin/nmem /usr/local/bin/nmem
+
+# ── Pre-install Nowledge Mem Hermes plugin ──
+# Stash a default copy at /opt/nowledge-mem-default/ so setup-once.sh
+# can restore it if the persistent home volume is empty or wiped.
+RUN mkdir -p /opt/nowledge-mem-default \
+    && mkdir -p /tmp/_build_home/.hermes \
+    && curl -fsSL https://nowledge-mem.nasw.heiyu.space/install/hermes-setup.sh \
+       | HERMES_HOME=/tmp/_build_home/.hermes bash || true \
+    && if [ -d /tmp/_build_home/.hermes/plugins/nowledge-mem ]; then \
+         cp -a /tmp/_build_home/.hermes/plugins/nowledge-mem/. /opt/nowledge-mem-default/; \
+       fi \
+    && rm -rf /tmp/_build_home
+
+# ── Copy first-boot setup script ──
+COPY setup-once.sh /opt/setup-once.sh
+RUN chmod +x /opt/setup-once.sh
+
+USER agent
