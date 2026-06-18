@@ -31,3 +31,17 @@ services:
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/var/home:/home/agent
+    setup_script: |
+      #!/bin/sh
+      set -e
+      export HOME=/home/agent
+      export PATH="/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+      # Install nmem-cli if not already present
+      if ! command -v nmem >/dev/null 2>&1; then
+        echo "[setup] Installing nmem-cli..."
+        /usr/local/bin/uv tool install nmem-cli --force
+        echo "[setup] nmem-cli installed: $(nmem --version 2>/dev/null || echo ok)"
+      else
+        echo "[setup] nmem-cli already present: $(nmem --version 2>/dev/null || echo ok)"
+      fi
