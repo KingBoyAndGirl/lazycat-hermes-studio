@@ -3,6 +3,7 @@ package: hermes-studio
 application:
   subdomain: hermes-studio
   privileged: true
+  multi_instance: true
   upstreams:
     - location: /
       backend: http://hermes-webui:{{ .U.port }}/
