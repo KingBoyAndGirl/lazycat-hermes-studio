@@ -1,7 +1,17 @@
-images:
-  hermes-studio:
-    dockerfile: Dockerfile.lzcapp
-    context: .
-    builder: local
-    upstream-match:
-      - ekkoye8888/hermes-web-ui
+icon: icon.png
+deploy_params: deploy_params.yml
+
+compose_override:
+  services:
+    knowlege-mem:
+      image: nmem/nmem:latest
+      command: ["nmem", "serve"]
+      restart: unless-stopped
+      volumes:
+        - /lzcapp/var/nowledge-mem:/data
+
+    hermes-webui:
+      depends_on:
+        - knowlege-mem
+      volumes:
+        - /lzcapp/var/nowledge-mem:/home/agent/.nowledge-mem

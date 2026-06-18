@@ -1,11 +1,19 @@
-name: hermes-studio
-title: Hermes Studio + Nowledge Mem
+package: community.lazycat.app.hermes-studio
 version: 0.0.1
-description: Hermes Studio with embedded Nowledge Mem (nmem) for persistent memory across container restarts.
+name: Hermes Studio
+description: Hermes AI Agent Web UI with Nowledge Mem (nmem) for persistent memory
 author: KingBoyAndGirl
-icon: icon.png
-home: https://github.com/KingBoyAndGirl/lazycat-hermes-studio
-
+homepage: https://github.com/KingBoyAndGirl/lazycat-hermes-studio
+min_os_version: 1.5.2
+locales:
+  zh:
+    name: Hermes Studio + Nowledge Mem
+    description: Hermes AI 智能体 Web 管理界面，集成 Nowledge Mem 持久化记忆
+  en:
+    name: Hermes Studio + Nowledge Mem
+    description: >-
+      Hermes AI Agent Web UI with Nowledge Mem for persistent memory across restarts
 permissions:
-  - network
-  - persistent-storage
+  required:
+    - net.internet
+    - lzcapp.user_delegate

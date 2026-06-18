@@ -1,0 +1,13 @@
+services:
+  knowlege-mem:
+    image: nmem/nmem:latest
+    command: ["nmem", "serve"]
+    restart: unless-stopped
+    volumes:
+      - /lzcapp/var/nowledge-mem:/data
+
+  hermes-webui:
+    depends_on:
+      - knowlege-mem
+    volumes:
+      - /lzcapp/var/nowledge-mem:/home/agent/.nowledge-mem
