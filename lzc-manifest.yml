@@ -20,6 +20,22 @@ application:
 services:
   hermes-webui:
     image: ekkoye8888/hermes-web-ui:latest
+    setup_script: |
+      # 兼容旧版 bind 路径迁移（每次启动检查，只迁移一次）
+      if [ -d /lzcapp/migrate/hermes ] && [ ! -f /home/agent/.hermes/.migrated ]; then
+        echo "[setup] Migrating .hermes from old path..."
+        mkdir -p /home/agent/.hermes
+        cp -a /lzcapp/migrate/hermes/. /home/agent/.hermes/
+        touch /home/agent/.hermes/.migrated
+        echo "[setup] .hermes migrated."
+      fi
+      if [ -d /lzcapp/migrate/hermes-web-ui ] && [ ! -f /home/agent/.hermes-web-ui/.migrated ]; then
+        echo "[setup] Migrating .hermes-web-ui from old path..."
+        mkdir -p /home/agent/.hermes-web-ui
+        cp -a /lzcapp/migrate/hermes-web-ui/. /home/agent/.hermes-web-ui/
+        touch /home/agent/.hermes-web-ui/.migrated
+        echo "[setup] .hermes-web-ui migrated."
+      fi
     environment:
       - PORT={{ .U.port }}
       - HERMES_HOME=/home/agent/.hermes
@@ -30,3 +46,5 @@ services:
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/var/home:/home/agent
+      - /lzcapp/var/hermes:/lzcapp/migrate/hermes
+      - /lzcapp/var/hermes-web-ui:/lzcapp/migrate/hermes-web-ui
