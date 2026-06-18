@@ -1,5 +1,3 @@
-package: hermes-studio
-
 application:
   subdomain: hermes-studio
   privileged: true
@@ -19,8 +17,7 @@ application:
 
 services:
   hermes-webui:
-    image: embed:hermes-webui
-
+    image: kingmo/hermes-studio:path-fix-0.0.2
     environment:
       - PORT={{ .U.port }}
       - HERMES_HOME=/home/agent/.hermes

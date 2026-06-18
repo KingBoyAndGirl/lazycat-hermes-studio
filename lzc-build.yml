@@ -1,14 +1,14 @@
 # LazyCat 构建配置
-buildscript: echo "Build skipped - using Docker image deployment"
+buildscript: echo "Build skipped - using direct Docker image deployment"
 manifest: ./lzc-manifest.yml
 contentdir: ./content
 pkgout: ./lpk
 icon: ./lzc-icon.png
+deploy_params: ./deploy_params.yml
 
-images:
-  hermes-webui:
-    dockerfile: images/Dockerfile
-    upstream-match: ekkoye8888
+actions:
+  prebuild:
+    - mkdir -p ./content ./lpk
 
 compose_override:
   services:
