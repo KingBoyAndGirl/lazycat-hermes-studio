@@ -37,11 +37,31 @@ services:
       export HOME=/home/agent
       export PATH="/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-      # Install nmem-cli if not already present
+      # Create default setup script on first deploy
+      if [ ! -f /home/agent/.setup.sh ]; then
+        cat > /home/agent/.setup.sh << 'SETUP_EOF'
+      #!/bin/sh
+      # 用户自定义启动脚本 — 每次容器启动时由 setup_script 执行
+      # 用法: 在此文件中添加需要安装的软件，重启后自动生效
+      #
+      # 示例:
+      #   uv tool install some-cli          # Python CLI 工具 (持久化到 ~/.local/bin)
+      #   npm install -g some-tool           # Node 工具 (持久化到 ~/.npm)
+      #   curl -fsSL https://example.com/install.sh | sh
+      #
+      # 注意: 只有 /home/agent 下的文件会持久化，系统路径重启后丢失
+
+      # --- nmem-cli ---
       if ! command -v nmem >/dev/null 2>&1; then
         echo "[setup] Installing nmem-cli..."
         /usr/local/bin/uv tool install nmem-cli --force
-        echo "[setup] nmem-cli installed: $(nmem --version 2>/dev/null || echo ok)"
-      else
-        echo "[setup] nmem-cli already present: $(nmem --version 2>/dev/null || echo ok)"
       fi
+      SETUP_EOF
+        chmod +x /home/agent/.setup.sh
+        echo "[setup] Created default ~/.setup.sh"
+      fi
+
+      # Execute user's setup script
+      echo "[setup] Running ~/.setup.sh..."
+      sh /home/agent/.setup.sh
+      echo "[setup] Done."
