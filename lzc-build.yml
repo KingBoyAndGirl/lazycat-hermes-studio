@@ -6,10 +6,35 @@ contentdir: ./content
 pkgout: ./lpk
 icon: ./lzc-icon.png
 
-# compose_override: privileged 不会自动挂载 docker.sock，
-# 需要通过 compose_override 显式挂载系统路径
 compose_override:
   services:
+    hermes-migrate:
+      image: busybox
+      command:
+        - sh
+        - -c
+        - |
+          set -e
+          if [ -d /old/hermes ] && [ ! -f /home/.hermes/.migrated ]; then
+            echo "[migrate] Moving .hermes..."
+            mkdir -p /home/.hermes
+            cp -a /old/hermes/. /home/.hermes/
+            echo "[migrate] .hermes done."
+          fi
+          if [ -d /old/hermes-web-ui ] && [ ! -f /home/.hermes-web-ui/.migrated ]; then
+            echo "[migrate] Moving .hermes-web-ui..."
+            mkdir -p /home/.hermes-web-ui
+            cp -a /old/hermes-web-ui/. /home/.hermes-web-ui/
+            echo "[migrate] .hermes-web-ui done."
+          fi
+          echo "[migrate] All done."
+      volumes:
+        - /lzcapp/var/home:/home
+        - /lzcapp/var/hermes:/old/hermes
+        - /lzcapp/var/hermes-web-ui:/old/hermes-web-ui
+
     hermes-webui:
+      depends_on:
+        - hermes-migrate
       volumes:
         - /data/playground/docker.sock:/var/run/docker.sock
