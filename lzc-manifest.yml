@@ -48,15 +48,15 @@ services:
         echo "[setup] /usr overlay mounted"
       fi
 
-      # Overlay /etc — alternatives and dpkg conffiles persist
-      mkdir -p $OVERLAY_ROOT/etc-upper $OVERLAY_ROOT/etc-work
-      if mount | grep -q "overlay on /etc type"; then
-        echo "[setup] /etc overlay already mounted"
+      # Overlay /etc/alternatives — persistent alternatives symlinks
+      mkdir -p $OVERLAY_ROOT/alternatives-upper $OVERLAY_ROOT/alternatives-work
+      if mount | grep -q "overlay on /etc/alternatives type"; then
+        echo "[setup] /etc/alternatives overlay already mounted"
       else
         mount -t overlay overlay \
-          -o lowerdir=/etc,upperdir=$OVERLAY_ROOT/etc-upper,workdir=$OVERLAY_ROOT/etc-work \
-          /etc
-        echo "[setup] /etc overlay mounted"
+          -o lowerdir=/etc/alternatives,upperdir=$OVERLAY_ROOT/alternatives-upper,workdir=$OVERLAY_ROOT/alternatives-work \
+          /etc/alternatives
+        echo "[setup] /etc/alternatives overlay mounted"
       fi
 
       export PATH="/home/agent/.local/bin:$PATH"

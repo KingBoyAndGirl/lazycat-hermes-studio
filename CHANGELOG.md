@@ -51,3 +51,10 @@
 - `/usr` overlay：持久化所有安装的二进制、库、头文件
 - `/etc` overlay：持久化 alternatives 链接、dpkg conffiles
 - 解决 vim 等需要 alternatives 的包重启后丢失问题
+
+## v0.1.2 (2026-06-19)
+**修复：overlay /etc 导致 DNS 失败**
+
+- v0.1.1 overlay 整个 /etc 导致 resolv.conf 被覆盖，DNS 解析失败
+- 改为只 overlay /etc/alternatives（窄范围，不影响系统）
+- /usr overlay + /etc/alternatives overlay = 完整持久化
