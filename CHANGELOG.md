@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.4.1 (2026-06-20)
+**关键修复：cap_add 未部署 — compose.override.yml 缺失**
+
+- 根因：手动 zip 打包不会处理 lzc-build.yml 的 compose_override 段
+- 导致 cap_add: [SYS_ADMIN] 和 /dev/fuse 未写入 compose.override.yml
+- Totoro/Entry 能 mount 是因为它们的 compose.override.yml 包含 cap_add
+- 修复：直接在 LPK 中包含 compose.override.yml 文件
+- 添加 /dev/fuse 设备（参考 Totoro）
+
 ## v0.4.0 (2026-06-20)
 **overlay + 预填充 upper 层 — 修复 v0.3.0 bind mount permission denied**
 
