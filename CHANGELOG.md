@@ -4,7 +4,7 @@
 **正式发布 — 全 rootfs 持久化 + 上游镜像**
 
 ### 核心特性
-- Totoro 风格 base+upper overlay 分离：镜像更新不丢用户包
+- base+upper overlay 分离：镜像更新不丢用户包
 - 切换到上游镜像 `ekkoye8888/hermes-web-ui:latest`
 - overlay lowerdir hash 指纹检测（支持 latest tag）
 - bash history 自动配置（重启不丢命令历史）

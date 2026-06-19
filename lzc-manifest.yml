@@ -31,10 +31,8 @@ services:
 
     setup_script: |
       #!/bin/sh
-      # Totoro-style rootfs persistence: base snapshot + user upper layer
       # base/ = image content snapshot (replaced on image update)
       # upper/ = user changes only (always preserved across updates)
-      # Reference: Totoro manager BaseVersionStatus + RootFSUser
       # /home excluded - already persistent via /lzcapp/var/home bind
 
       ROOTFS=/lzcapp/cache/rootfs
