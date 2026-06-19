@@ -17,7 +17,7 @@ application:
 
 services:
   hermes-webui:
-    image: kingmo/hermes-studio:path-fix-0.0.3
+    image: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-studio:path-fix-0.0.3
     environment:
       - PORT={{ .U.port }}
       - HERMES_HOME=/home/agent/.hermes
