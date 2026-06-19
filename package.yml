@@ -1,5 +1,5 @@
 package: community.lazycat.app.hermes-studio
-version: 0.0.6
+version: 0.0.7
 name: Hermes Studio
 description: Hermes AI Agent Web UI with persistent home directory and PATH snapshot fix
 author: 王.W

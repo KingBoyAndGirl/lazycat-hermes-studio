@@ -27,3 +27,11 @@ services:
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/var/home:/home/agent
+
+    setup_script: |
+      #!/bin/sh
+      # Make npm install -g land in persistent ~/.local/bin
+      npm config set prefix /home/agent/.local 2>/dev/null || true
+      # Ensure PATH includes persistent bin
+      export PATH="/home/agent/.local/bin:$PATH"
+      echo "npm prefix set to /home/agent/.local"
