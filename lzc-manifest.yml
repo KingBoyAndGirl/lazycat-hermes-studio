@@ -23,7 +23,7 @@ services:
       - HERMES_BIN=/opt/hermes/.venv/bin/hermes
       - HERMES_WEB_UI_MANAGED_GATEWAY=1
       - HERMES_WEB_UI_XAI_CALLBACK_BIND_HOST=0.0.0.0
-      - PATH=/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/var/home:/home/agent
@@ -42,7 +42,6 @@ services:
       UPPER=$ROOTFS/upper
       DIRS="etc opt root srv usr var"
 
-      npm config set prefix /home/agent/.local 2>/dev/null || true
 
       # --- Image fingerprint: overlay lowerdir (works for latest tag too) ---
       CURRENT_ID=$(grep " / overlay" /proc/1/mountinfo | md5sum | cut -d" " -f1)
@@ -89,4 +88,3 @@ services:
       done
       echo "[setup] rootfs: $n dirs overlay (base lower + user upper)"
 
-      export PATH="/home/agent/.local/bin:$PATH"
