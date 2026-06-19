@@ -26,14 +26,14 @@ services:
       - PATH=/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
-      - /lzcapp/var/home:/home/agent
+      - /lzcapp/documents/{{ .S.DeployUID }}:/home/agent
       - /lzcapp/var/cache:/lzcapp/cache
 
     setup_script: |
       #!/bin/sh
       # base/ = image content snapshot (replaced on image update)
       # upper/ = user changes only (always preserved across updates)
-      # /home excluded - already persistent via /lzcapp/var/home bind
+      # /home excluded - already persistent via /lzcapp/documents/<uid> bind
 
       ROOTFS=/lzcapp/cache/rootfs
       BASE=$ROOTFS/base
@@ -86,6 +86,18 @@ services:
       done
       echo "[setup] rootfs: $n dirs overlay (base lower + user upper)"
 
+
+      # --- Migrate /lzcapp/var/home to /home/agent on first boot ---
+      if [ ! -f /home/agent/.migrated-from-var-home ]; then
+        if [ -d /lzcapp/var/home ] && [ "$(ls -A /lzcapp/var/home 2>/dev/null)" ]; then
+          echo "[setup] migrating /lzcapp/var/home -> /home/agent ..."
+          cp -a /lzcapp/var/home/. /home/agent/
+          touch /home/agent/.migrated-from-var-home
+          echo "[setup] migration done"
+        else
+          touch /home/agent/.migrated-from-var-home
+        fi
+      fi
       # --- Bash history: flush after each command (survives container kill) ---
       BASHRC=/home/agent/.bashrc
       if ! grep -q "history -a" "$BASHRC" 2>/dev/null; then

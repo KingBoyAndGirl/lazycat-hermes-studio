@@ -1,29 +1,17 @@
 # Changelog
 
-## v2026.06.19 (2026-06-19)
-**正式发布 — 全 rootfs 持久化 + 上游镜像**
+## v2026.06.20
 
-### 核心特性
-- base+upper overlay 分离：镜像更新不丢用户包
-- 切换到上游镜像 `ekkoye8888/hermes-web-ui:latest`
-- overlay lowerdir hash 指纹检测（支持 latest tag）
-- bash history 自动配置（重启不丢命令历史）
+- 开启 `document.private` 权限
+- `/home/agent` 绑定到 `/lzcapp/documents/<uid>`，用户可在懒猫文件管理器的"应用文稿"中直接浏览
+- 首次启动自动迁移 `/lzcapp/var/home` 数据到应用文稿目录
+- 保持 rootfs overlay 持久化架构不变（base+upper 分离）
 
-### 持久化范围
-- `/usr` `/var` `/etc` `/opt` `/root` `/srv` — overlay mounted（base lower + user upper）
-- `/home/agent` — bind mount 到 `/lzcapp/var/home`
-- `apt install` 的包重启后保留
-- `uv tool install` / `npm install -g` 的工具重启后保留
+## v2026.06.19
 
-### 依赖
-- `privileged: true` + `cap_add: SYS_ADMIN`
-- `/dev/fuse` 设备
-- docker.sock 挂载
-
-### 已验证
-- ✅ Overlay 6 目录挂载
-- ✅ htop 安装 → 重启 → 保留
-- ✅ 指纹变化 → re-snapshot base → upper 用户包保留
-- ✅ nmem + Working Memory + Hermes memory provider
-- ✅ bash history 重启后保留
-- ✅ claude 2.1.183 / codex 0.141.0 可用
+- 正式发布版本
+- 全 rootfs 持久化（base+upper overlay 分离）
+- 镜像指纹检测（overlay lowerdir hash）
+- bash history 自动配置
+- 切换到上游镜像 ekkoye8888/hermes-web-ui:latest
+- AGPL-3.0 许可证
