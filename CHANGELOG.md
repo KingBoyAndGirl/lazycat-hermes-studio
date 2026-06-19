@@ -42,3 +42,12 @@
 - 解决 `/etc/alternatives/` 重启丢失问题（vim 等 alternatives 链接）
 - 同时持久化 dpkg 数据库、系统配置等所有 rootfs 变更
 - 使用 `rootfs-upper` 目录名区分旧的 `usr-upper`
+
+## v0.1.1 (2026-06-19)
+**overlay 双层方案：/usr + /etc**
+
+- 回退 v0.1.0 的 `/` overlay（嵌套 overlay 写入不生效）
+- 改为 `/usr` + `/etc` 双 overlay 方案
+- `/usr` overlay：持久化所有安装的二进制、库、头文件
+- `/etc` overlay：持久化 alternatives 链接、dpkg conffiles
+- 解决 vim 等需要 alternatives 的包重启后丢失问题

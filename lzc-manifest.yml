@@ -37,15 +37,26 @@ services:
       # npm prefix persistence
       npm config set prefix /home/agent/.local 2>/dev/null || true
 
-      # Overlay / — full rootfs persistence (apt, alternatives, dpkg, etc.)
-      mkdir -p $OVERLAY_ROOT/rootfs-upper $OVERLAY_ROOT/rootfs-work
-      if mount | grep -q "overlay on / type.*rootfs-upper"; then
-        echo "[setup] / overlay already mounted"
+      # Overlay /usr — all user-installed binaries/libs persist
+      mkdir -p $OVERLAY_ROOT/usr-upper $OVERLAY_ROOT/usr-work
+      if mount | grep -q "overlay on /usr type"; then
+        echo "[setup] /usr overlay already mounted"
       else
         mount -t overlay overlay \
-          -o lowerdir=/,upperdir=$OVERLAY_ROOT/rootfs-upper,workdir=$OVERLAY_ROOT/rootfs-work \
-          /
-        echo "[setup] / overlay mounted (upper=$OVERLAY_ROOT/rootfs-upper)"
+          -o lowerdir=/usr,upperdir=$OVERLAY_ROOT/usr-upper,workdir=$OVERLAY_ROOT/usr-work \
+          /usr
+        echo "[setup] /usr overlay mounted"
+      fi
+
+      # Overlay /etc — alternatives and dpkg conffiles persist
+      mkdir -p $OVERLAY_ROOT/etc-upper $OVERLAY_ROOT/etc-work
+      if mount | grep -q "overlay on /etc type"; then
+        echo "[setup] /etc overlay already mounted"
+      else
+        mount -t overlay overlay \
+          -o lowerdir=/etc,upperdir=$OVERLAY_ROOT/etc-upper,workdir=$OVERLAY_ROOT/etc-work \
+          /etc
+        echo "[setup] /etc overlay mounted"
       fi
 
       export PATH="/home/agent/.local/bin:$PATH"
