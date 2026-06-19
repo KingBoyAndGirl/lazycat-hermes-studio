@@ -1,0 +1,29 @@
+# Changelog
+
+## v0.0.8 (2026-06-19)
+**实验性：SYS_ADMIN + overlay 持久化 /usr**
+
+- 添加 `cap_add: [SYS_ADMIN]` 到 compose_override（参考 Totoro LPK）
+- setup_script 使用 kernel overlay mount 将 `/usr` 映射到持久化层
+  - lowerdir: 镜像的 /usr（只读）
+  - upperdir: `/lzcapp/cache/overlay/usr-upper`（持久化，用户写入层）
+  - workdir: `/lzcapp/cache/overlay/usr-work`
+- 用户通过 apt/npm/pip 安装的任何工具自动持久化到 upper 层
+- 重启后 overlay 自动重新挂载，工具不丢失
+- 无需首次复制、无需备份、无需包列表重装
+- 新增 bind: `/lzcapp/var/cache:/lzcapp/cache` 确保 upper 层持久化
+
+### 变更文件
+- `lzc-manifest.yml`: 更新 setup_script，添加 overlay mount 逻辑
+- `lzc-build.yml`: compose_override 添加 cap_add SYS_ADMIN
+- `package.yml`: version 0.0.7 → 0.0.8
+- `CHANGELOG.md`: 新增
+
+## v0.0.7 (2026-06-19)
+- setup_script 设置 npm prefix 到 `/home/agent/.local`，解决 codex/claude 安装后重启丢失
+
+## v0.0.6 (2026-06-18)
+- 硬编码端口（8648/8651/56121），去掉 deploy_params 模板变量
+
+## v0.0.1 - v0.0.5
+- 初始版本迭代，最终 v0.0.6 可用

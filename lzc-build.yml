@@ -12,5 +12,7 @@ actions:
 compose_override:
   services:
     hermes-webui:
+      cap_add:
+        - SYS_ADMIN
       volumes:
         - /data/playground/docker.sock:/var/run/docker.sock

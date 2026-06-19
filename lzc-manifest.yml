@@ -27,11 +27,25 @@ services:
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/var/home:/home/agent
+      - /lzcapp/var/cache:/lzcapp/cache
 
     setup_script: |
       #!/bin/sh
-      # Make npm install -g land in persistent ~/.local/bin
+      set -e
+      OVERLAY_ROOT=/lzcapp/cache/overlay
+
+      # npm prefix persistence
       npm config set prefix /home/agent/.local 2>/dev/null || true
-      # Ensure PATH includes persistent bin
+
+      # Overlay /usr — all user-installed tools persist
+      mkdir -p $OVERLAY_ROOT/usr-upper $OVERLAY_ROOT/usr-work
+      if mount | grep -q "overlay on /usr"; then
+        echo "[setup] /usr overlay already mounted"
+      else
+        mount -t overlay overlay \
+          -o lowerdir=/usr,upperdir=$OVERLAY_ROOT/usr-upper,workdir=$OVERLAY_ROOT/usr-work \
+          /usr
+        echo "[setup] /usr overlay mounted (lower=/usr, upper=$OVERLAY_ROOT/usr-upper)"
+      fi
+
       export PATH="/home/agent/.local/bin:$PATH"
-      echo "npm prefix set to /home/agent/.local"
