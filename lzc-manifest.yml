@@ -4,14 +4,13 @@ application:
   multi_instance: true
   upstreams:
     - location: /
-      backend: http://hermes-webui:{{ .U.port }}/
+      backend: http://hermes-webui:8648/
     - location: /preview/
-      backend: http://hermes-webui:{{ .U.preview_frontend_port }}/
+      backend: http://hermes-webui:8651/
       disable_auto_health_checking: true
     - location: /xai-oauth/
-      backend: http://hermes-webui:{{ .U.xai_oauth_port }}/
+      backend: http://hermes-webui:56121/
       disable_auto_health_checking: true
-
   public_path:
     - /
 
@@ -19,7 +18,7 @@ services:
   hermes-webui:
     image: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-studio:path-fix-0.0.3
     environment:
-      - PORT={{ .U.port }}
+      - PORT=8648
       - HERMES_HOME=/home/agent/.hermes
       - HERMES_BIN=/opt/hermes/.venv/bin/hermes
       - HERMES_WEB_UI_MANAGED_GATEWAY=1
