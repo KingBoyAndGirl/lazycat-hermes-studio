@@ -1,13 +1,16 @@
 # Changelog
 
-## v0.4.1 (2026-06-20)
-**关键修复：cap_add 未部署 — compose.override.yml 缺失**
+## v0.5.0 (2026-06-20)
+**Totoro 风格 base+upper 分离 — 镜像更新不丢用户包**
 
-- 根因：手动 zip 打包不会处理 lzc-build.yml 的 compose_override 段
-- 导致 cap_add: [SYS_ADMIN] 和 /dev/fuse 未写入 compose.override.yml
-- Totoro/Entry 能 mount 是因为它们的 compose.override.yml 包含 cap_add
-- 修复：直接在 LPK 中包含 compose.override.yml 文件
-- 添加 /dev/fuse 设备（参考 Totoro）
+- 参考 Totoro manager 的 BaseVersionStatus + RootFSUser 架构
+- 分离 base 快照（镜像内容）和 upper 层（用户变更）
+- 首次启动：snapshot 镜像到 base/，记录镜像指纹
+- apt install 的包写入 upper/ 层（overlay copy-up）
+- 镜像更新时：检测指纹变化 → 重新 snapshot base/ → upper/ 用户包保留
+- 不再需要手动清缓存
+
+# Changelog
 
 ## v0.4.0 (2026-06-20)
 **overlay + 预填充 upper 层 — 修复 v0.3.0 bind mount permission denied**
