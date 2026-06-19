@@ -1,0 +1,21 @@
+params:
+  - id: port
+    type: string
+    name: "WebUI 服务端口"
+    default_value: "8648"
+    hidden: true
+  - id: preview_frontend_port
+    type: string
+    name: "预览前端服务端口"
+    default_value: "8651"
+    hidden: true
+  - id: xai_oauth_port
+    type: string
+    name: "xAI OAuth 回调端口"
+    default_value: "56121"
+    hidden: true
+locales:
+  zh:
+    name: 部署参数
+  en:
+    name: Deploy Parameters
