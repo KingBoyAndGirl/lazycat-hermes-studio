@@ -44,11 +44,9 @@ services:
 
       npm config set prefix /home/agent/.local 2>/dev/null || true
 
-      # --- Image fingerprint: use image tag from manifest ---
-      CURRENT_ID=$(grep "image:" /lzcapp/pkg/manifest.yml 2>/dev/null | head -1)
+      # --- Image fingerprint: overlay lowerdir (works for latest tag too) ---
+      CURRENT_ID=$(grep " / overlay" /proc/1/mountinfo | md5sum | cut -d" " -f1)
       STORED_ID=$(cat "$ROOTFS/.image-id" 2>/dev/null)
-
-
       # --- First boot or image update: snapshot base ---
       NEED_SNAPSHOT=0
       if [ ! -f "$ROOTFS/.image-id" ]; then
