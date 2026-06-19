@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.3.0 (2026-06-20)
+**全 rootfs bind mount 持久化 — 参考 Totoro/Entry 底层机制**
+
+- 参考 Totoro 和 LightOS Entry LPK 的持久化原理：rootfs 变更存在 btrfs 持久化卷上
+- 首次启动：snapshot 整个 rootfs（bin etc lib lib64 opt root sbin srv usr var）到 `/lzcapp/cache/rootfs/`（btrfs 持久化）
+- 后续启动：逐目录 bind mount 回来，秒级完成
+- 每次启动同步容器生成文件（resolv.conf/hostname/hosts）确保 DNS 正常
+- 覆盖所有目录：`apt install` 写入 /usr + /var + /etc/alternatives 全部持久化
+- `/home` 排除 — 已通过 `/lzcapp/var/home` 单独持久化
+- 首次启动约需 1-2min 复制，后续秒级
+- 镜像更新时需清缓存：`rm -rf /lzcapp/cache/rootfs`
+
+
 ## v0.0.8 (2026-06-19)
 **实验性：SYS_ADMIN + overlay 持久化 /usr**
 

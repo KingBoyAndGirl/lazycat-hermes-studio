@@ -1,0 +1,18 @@
+# LazyCat 构建配置
+buildscript: echo "Build skipped - using direct Docker image deployment"
+manifest: ./lzc-manifest.yml
+contentdir: ./content
+pkgout: ./lpk
+icon: ./lzc-icon.png
+
+actions:
+  prebuild:
+    - mkdir -p ./content ./lpk
+
+compose_override:
+  services:
+    hermes-webui:
+      cap_add:
+        - SYS_ADMIN
+      volumes:
+        - /data/playground/docker.sock:/var/run/docker.sock
