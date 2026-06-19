@@ -16,7 +16,7 @@ application:
 
 services:
   hermes-webui:
-    image: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-studio:path-fix-0.0.3
+    image: ekkoye8888/hermes-web-ui:latest
     environment:
       - PORT=8648
       - HERMES_HOME=/home/agent/.hermes

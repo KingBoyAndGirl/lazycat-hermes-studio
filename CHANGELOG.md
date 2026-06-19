@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.5.2 (2026-06-20)
+**切换到上游镜像 + 清理**
+
+- 镜像从 fork `path-fix-0.0.3` 切换到上游 `ekkoye8888/hermes-web-ui:latest`
+- rootfs 持久化后不再需要 PATH fix fork（直接改 /etc/profile 即可）
+- overlay lowerdir hash 检测 works for latest tag
+
+# Changelog
+
 ## v0.5.0 (2026-06-20)
 **Totoro 风格 base+upper 分离 — 镜像更新不丢用户包**
 
