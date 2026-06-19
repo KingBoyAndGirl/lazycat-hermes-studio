@@ -23,7 +23,7 @@ services:
       - HERMES_BIN=/opt/hermes/.venv/bin/hermes
       - HERMES_WEB_UI_MANAGED_GATEWAY=1
       - HERMES_WEB_UI_XAI_CALLBACK_BIND_HOST=0.0.0.0
-      - PATH=/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/var/home:/home/agent
@@ -86,9 +86,5 @@ services:
           -o "lowerdir=$BASE/$d,upperdir=$UPPER/$d,workdir=$ROOTFS/work/$d" \
           "/$d" && n=$((n+1))
       done
-  # Install nmem to PATH if not present
-  if ! command -v nmem >/dev/null 2>&1 && [ -f /home/agent/.local/bin/nmem ]; then
-    cp /home/agent/.local/bin/nmem /usr/local/bin/nmem 2>/dev/null
-  fi
       echo "[setup] rootfs: $n dirs overlay (base lower + user upper)"
 
