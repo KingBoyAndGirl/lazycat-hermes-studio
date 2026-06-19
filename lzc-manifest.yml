@@ -39,7 +39,7 @@ services:
 
       # Overlay /usr — all user-installed tools persist
       mkdir -p $OVERLAY_ROOT/usr-upper $OVERLAY_ROOT/usr-work
-      if mount | grep -q "overlay on /usr"; then
+      if mount | grep -q "overlay on /usr type"; then
         echo "[setup] /usr overlay already mounted"
       else
         mount -t overlay overlay \

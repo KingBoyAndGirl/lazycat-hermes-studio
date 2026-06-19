@@ -27,3 +27,10 @@
 
 ## v0.0.1 - v0.0.5
 - 初始版本迭代，最终 v0.0.6 可用
+
+## v0.0.9 (2026-06-19)
+**修复：setup_script grep 匹配错误**
+
+- 修复 `mount | grep "overlay on /usr"` 误匹配系统 `/usr/share/zoneinfo/Etc/UTC` 的 overlay
+- 改用 `mount | grep "overlay on /usr type"` 精确匹配
+- v0.0.8 的 overlay 方案已验证可行，仅此 grep 匹配 bug 需要修复
