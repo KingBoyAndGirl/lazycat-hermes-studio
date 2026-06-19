@@ -1,8 +1,0 @@
-services:
-  hermes-webui:
-    cap_add:
-      - SYS_ADMIN
-    devices:
-      - /dev/fuse:/dev/fuse
-    volumes:
-      - /data/playground/docker.sock:/var/run/docker.sock
