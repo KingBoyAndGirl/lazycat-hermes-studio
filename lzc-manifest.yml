@@ -44,7 +44,7 @@ services:
 
 
       # --- Image fingerprint: overlay lowerdir (works for latest tag too) ---
-      CURRENT_ID=$(grep " / overlay" /proc/1/mountinfo | md5sum | cut -d" " -f1)
+      CURRENT_ID=$(grep " / rw.*overlay" /proc/1/mountinfo | md5sum | cut -d" " -f1)
       STORED_ID=$(cat "$ROOTFS/.image-id" 2>/dev/null)
       # --- First boot or image update: snapshot base ---
       NEED_SNAPSHOT=0
@@ -86,5 +86,9 @@ services:
           -o "lowerdir=$BASE/$d,upperdir=$UPPER/$d,workdir=$ROOTFS/work/$d" \
           "/$d" && n=$((n+1))
       done
+  # Install nmem to PATH if not present
+  if ! command -v nmem >/dev/null 2>&1 && [ -f /home/agent/.local/bin/nmem ]; then
+    cp /home/agent/.local/bin/nmem /usr/local/bin/nmem 2>/dev/null
+  fi
       echo "[setup] rootfs: $n dirs overlay (base lower + user upper)"
 

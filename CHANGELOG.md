@@ -1,4 +1,9 @@
 # Changelog
+## v0.5.3 (2026-06-20)
+**修复指纹检测 + nmem PATH**
+
+- 修复 overlay lowerdir 指纹 grep 匹配错误（`/ rw,relatime - overlay` 而非 `/ overlay`）
+- setup_script 自动将 nmem 从 ~/.local/bin 复制到 /usr/local/bin
 
 ## v0.5.2 (2026-06-20)
 **切换到上游镜像**
