@@ -31,19 +31,17 @@ services:
 
     setup_script: |
       #!/bin/sh
-      # Full rootfs persistence via per-directory bind mount
-      # Ref: Totoro/LightOS Entry — rootfs on btrfs = survive restart
-      # First boot: snapshot rootfs to /lzcapp/cache/rootfs (btrfs persistent)
-      # Subsequent: bind mount each directory back
-      # /home excluded — already persistent via /lzcapp/var/home bind
+      # Full rootfs persistence via overlay with pre-populated upper layer
+      # v0.0.9 proved overlay mount works from setup_script
+      # Pre-populated upper avoids dpkg-divert cross-layer rename issue
+      # /home excluded - already persistent via /lzcapp/var/home bind
 
       ROOTFS=/lzcapp/cache/rootfs
-      DIRS="bin etc lib lib64 opt root sbin srv usr var"
+      DIRS="etc opt root srv usr var"
 
-      # npm prefix to persistent home
       npm config set prefix /home/agent/.local 2>/dev/null || true
 
-      # --- First boot: snapshot entire rootfs ---
+      # First boot: snapshot rootfs to btrfs persistent storage
       if [ ! -f "$ROOTFS/.initialized" ]; then
         echo "[setup] first boot: snapshotting rootfs to persistent storage..."
         mkdir -p "$ROOTFS"
@@ -56,19 +54,20 @@ services:
         echo "[setup] snapshot complete"
       fi
 
-      # --- Sync container-generated files (Docker writes these each boot) ---
+      # Sync container-generated files each boot
       for f in resolv.conf hostname hosts; do
         [ -f "/etc/$f" ] && cp -f "/etc/$f" "$ROOTFS/etc/$f" 2>/dev/null
       done
 
-      # --- Bind mount each persisted directory ---
+      # Overlay mount with pre-populated upper layer
       n=0
       for d in $DIRS; do
-        if [ -d "$ROOTFS/$d" ] && [ -d "/$d" ]; then
-          mount --bind "$ROOTFS/$d" "/$d"
-          n=$((n+1))
-        fi
+        [ -d "$ROOTFS/$d" ] || continue
+        [ -d "/$d" ] || continue
+        rm -rf "$ROOTFS/${d}-work"
+        mkdir -p "$ROOTFS/${d}-work"
+        mount -t overlay overlay           -o "lowerdir=/$d,upperdir=$ROOTFS/$d,workdir=$ROOTFS/${d}-work"           "/$d" && n=$((n+1))
       done
-      echo "[setup] rootfs persistence: $n directories bind-mounted from btrfs"
+      echo "[setup] rootfs persistence: $n directories overlay-mounted"
 
       export PATH="/home/agent/.local/bin:$PATH"

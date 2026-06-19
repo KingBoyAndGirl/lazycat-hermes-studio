@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.4.0 (2026-06-20)
+**overlay + 预填充 upper 层 — 修复 v0.3.0 bind mount permission denied**
+
+- v0.3.0 bind mount 在 setup_script 中 permission denied（SYS_ADMIN 对 bind mount 受限）
+- 改用 overlay mount（v0.0.9 已验证 setup_script 中可用）
+- 关键改进：预填充 upper 层（首次启动 snapshot 整个 rootfs）
+  - dpkg-divert rename 留在 upper 层内 → 无跨层 EXDEV 错误
+  - 解决 v0.1.x 系列的 dpkg-divert 失败问题
+- 覆盖 /etc /opt /root /srv /usr /var — apt install 全路径持久化
+- 每次启动同步 resolv.conf/hostname/hosts 确保 DNS 正常
+
 ## v0.3.0 (2026-06-20)
 **全 rootfs bind mount 持久化 — 参考 Totoro/Entry 底层机制**
 
