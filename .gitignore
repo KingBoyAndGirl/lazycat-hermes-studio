@@ -1,5 +1,3 @@
 # Build artifacts
 lpk/
 content/
-*.lpk
-!releases/*.lpk
