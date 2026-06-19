@@ -1,17 +1,17 @@
 package: community.lazycat.app.hermes-studio
 version: 0.5.2
 name: Hermes Studio
-description: Hermes AI Agent Web UI with persistent home directory and PATH snapshot fix
+description: Hermes AI Agent Web UI with full rootfs persistence (Totoro-style base+upper overlay)
 author: 王.W
 homepage: https://github.com/KingBoyAndGirl/lazycat-hermes-studio
 min_os_version: 1.5.2
 locales:
   zh:
     name: Hermes Studio
-    description: Hermes AI 智能体 Web 管理界面，持久化 home 目录并修复 PATH 快照问题
+    description: Hermes AI 智能体 Web 管理界面，全 rootfs 持久化（Totoro 风格 base+upper overlay）
   en:
     name: Hermes Studio
-    description: Hermes AI Agent Web UI with persistent home directory and PATH snapshot fix
+    description: Hermes AI Agent Web UI with full rootfs persistence (Totoro-style base+upper overlay)
 permissions:
   required:
     - net.internet
