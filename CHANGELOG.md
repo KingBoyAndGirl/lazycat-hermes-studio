@@ -58,3 +58,12 @@
 - v0.1.1 overlay 整个 /etc 导致 resolv.conf 被覆盖，DNS 解析失败
 - 改为只 overlay /etc/alternatives（窄范围，不影响系统）
 - /usr overlay + /etc/alternatives overlay = 完整持久化
+
+## v0.2.0 (2026-06-19)
+**方案重构：overlay → bind mount**
+
+- overlay `/usr` 方案放弃 — dpkg-divert 跨层 rename 失败（内核限制）
+- 改用 bind mount：首次启动复制 `/usr` 到持久化卷，之后直接 bind mount
+- 优势：dpkg/apt/divert 完全正常，无内核兼容性问题
+- 首次启动需要 ~2min 复制 1.6G /usr，后续秒级启动
+- `/etc/alternatives` 不再需要单独处理（bind mount 下正常工作）
