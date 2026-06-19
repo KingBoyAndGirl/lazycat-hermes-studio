@@ -1,5 +1,5 @@
 package: community.lazycat.app.hermes-studio
-version: 0.5.4
+version: 0.5.5
 name: Hermes Studio
 description: Hermes AI Agent Web UI with full rootfs persistence (Totoro-style base+upper overlay)
 author: 王.W

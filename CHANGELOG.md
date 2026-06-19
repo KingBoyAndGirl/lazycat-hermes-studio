@@ -1,4 +1,11 @@
 # Changelog
+
+## v0.5.5 (2026-06-20)
+**bash history 持久化**
+
+- setup_script 自动配置 ~/.bashrc：每条命令执行后立即写盘
+- 容器重启/kill 不丢 history
+- 幂等：只在首次写入，不覆盖用户自定义
 ## v0.5.3 (2026-06-20)
 **修复指纹检测 + nmem PATH**
 
