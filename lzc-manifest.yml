@@ -88,3 +88,10 @@ services:
       done
       echo "[setup] rootfs: $n dirs overlay (base lower + user upper)"
 
+      # --- Bash history: flush after each command (survives container kill) ---
+      BASHRC=/home/agent/.bashrc
+      if ! grep -q "history -a" "$BASHRC" 2>/dev/null; then
+        printf '\n# History: write after each command (survives container kill)\nexport HISTFILE=~/.bash_history\nexport HISTSIZE=10000\nexport HISTFILESIZE=20000\nexport PROMPT_COMMAND="history -a; $PROMPT_COMMAND"\n' >> "$BASHRC"
+        echo "[setup] bash history config added to .bashrc"
+      fi
+
