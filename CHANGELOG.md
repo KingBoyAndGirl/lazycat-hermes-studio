@@ -34,3 +34,11 @@
 - 修复 `mount | grep "overlay on /usr"` 误匹配系统 `/usr/share/zoneinfo/Etc/UTC` 的 overlay
 - 改用 `mount | grep "overlay on /usr type"` 精确匹配
 - v0.0.8 的 overlay 方案已验证可行，仅此 grep 匹配 bug 需要修复
+
+## v0.1.0 (2026-06-19)
+**全 rootfs overlay 持久化**
+
+- overlay 从 `/usr` 扩展到 `/` — 整个 rootfs 持久化
+- 解决 `/etc/alternatives/` 重启丢失问题（vim 等 alternatives 链接）
+- 同时持久化 dpkg 数据库、系统配置等所有 rootfs 变更
+- 使用 `rootfs-upper` 目录名区分旧的 `usr-upper`
