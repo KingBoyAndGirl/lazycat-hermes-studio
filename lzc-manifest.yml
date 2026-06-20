@@ -103,6 +103,4 @@ services:
         echo "[setup] bash history config added to .bashrc"
       fi
 
-      # --- Test HTTP server on port 9090 (for port-prefix routing test) ---
-      node -e "require('http').createServer((req,res)=>{res.writeHead(200,{'Content-Type':'text/html'});res.end('<h1>Port 9090 OK</h1><p>Subdomain port-prefix routing works!</p>');}).listen(9090,()=>console.log('[test] HTTP server on :9090'))" &
 

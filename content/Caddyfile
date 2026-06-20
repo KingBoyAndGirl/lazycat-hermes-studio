@@ -1,16 +1,16 @@
-{
-	auto_https off
+{	auto_https off
 	http_port 80
 	https_port 0
 }
 :80 {
-	# 从 X-Forwarded-Host 提取端口号（{re.match.1} 在 reverse_proxy to 中不生效，改用 map）
-	map {>X-Forwarded-Host} {upstream_port} {
+	# 从 X-Forwarded-Host 提取端口号
+	# map source 用完整 placeholder 语法（{>X-Forwarded-Host} 可能不生效）
+	map {http.request.header.X-Forwarded-Host} {upstream_port} {
 		~(?i)^(\d+)-.*hermesstudio  {re.match.1}
 		default                      8648
 	}
 
-	# /preview/ → hermes-webui:8651（剥离前缀）
+	# /preview/ -> hermes-webui:8651
 	handle_path /preview/* {
 		reverse_proxy hermes-webui:8651 {
 			lb_try_duration 30s
@@ -18,7 +18,7 @@
 		}
 	}
 
-	# /xai-oauth/ → hermes-webui:56121（剥离前缀）
+	# /xai-oauth/ -> hermes-webui:56121
 	handle_path /xai-oauth/* {
 		reverse_proxy hermes-webui:56121 {
 			lb_try_duration 30s
@@ -26,7 +26,7 @@
 		}
 	}
 
-	# 默认 → hermes-webui:{upstream_port}（端口前缀走对应端口，否则走 8648）
+	# 默认 -> hermes-webui:{upstream_port}
 	handle {
 		reverse_proxy hermes-webui:{upstream_port} {
 			lb_try_duration 30s
