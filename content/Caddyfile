@@ -8,6 +8,7 @@
 	handle_path /preview/* {
 		reverse_proxy hermes-webui:8651 {
 			lb_try_duration 30s
+			header_up Host {http.request.header.X-Forwarded-Host}
 		}
 	}
 
@@ -15,14 +16,17 @@
 	handle_path /xai-oauth/* {
 		reverse_proxy hermes-webui:56121 {
 			lb_try_duration 30s
+			header_up Host {http.request.header.X-Forwarded-Host}
 		}
 	}
 
 	# 默认 → hermes-webui:8648
-	# header_up 保留 Ingress 设置的原始域名（避免被 Caddy 覆盖为 caddy:80）
+	# header_up Host: 保留原始域名（否则 Caddy 设为 hermes-webui:8648，Socket.IO 会拒绝）
+	# header_up X-Forwarded-Host: 保留原始域名给后端 URL 生成
 	handle {
 		reverse_proxy hermes-webui:8648 {
 			lb_try_duration 30s
+			header_up Host {http.request.header.X-Forwarded-Host}
 			header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
 		}
 	}
