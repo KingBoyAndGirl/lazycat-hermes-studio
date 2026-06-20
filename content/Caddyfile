@@ -13,11 +13,11 @@
 		}
 	}
 
-	handle /preview/* {
+	handle_path /preview/* {
 		reverse_proxy hermes-webui:8651
 	}
 
-	handle /xai-oauth/* {
+	handle_path /xai-oauth/* {
 		reverse_proxy hermes-webui:56121
 	}
 
