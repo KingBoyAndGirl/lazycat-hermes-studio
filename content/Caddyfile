@@ -4,12 +4,13 @@
 	https_port 0
 }
 :80 {
-	# 子域名端口前缀路由：9090-1-hermes-studio.nasw.heiyu.space → hermes-webui:9090
-	@port9090 {
-		header_regexp X-Forwarded-Host (?i)^9090-.*hermes-studio
+	# 子域名端口前缀路由：(\d+)-*-hermes-studio → hermes-webui:<port>
+	# 匹配 9090-1-hermes-studio.nasw.heiyu.space → hermes-webui:9090
+	@port_prefix {
+		header_regexp X-Forwarded-Host (?i)^(\d+)-.*hermes-studio
 	}
-	handle @port9090 {
-		reverse_proxy hermes-webui:9090 {
+	handle @port_prefix {
+		reverse_proxy hermes-webui:{re.capture.1} {
 			lb_try_duration 30s
 			header_up Host {http.request.header.X-Forwarded-Host}
 			header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
