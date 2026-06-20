@@ -13,7 +13,7 @@ application:
 
 services:
   nginx:
-    image: nginx:alpine
+    image: registry.cn-shanghai.aliyuncs.com/wtjking/nginx:alpine
     setup_script: |
       sh /lzcapp/pkg/content/setup-nginx.sh
 
