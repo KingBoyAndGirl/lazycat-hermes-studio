@@ -1,5 +1,13 @@
 # Changelog
 
+## v2026.06.20-caddy-routing
+
+- 添加 Caddy 反向代理服务，支持子域名端口前缀访问
+- `8648-1-hermes-studio.nasw.heiyu.space` 路由到 hermes-webui:8648
+- `hermes-studio.nasw.heiyu.space/preview/*` 路由到 hermes-webui:8651
+- `hermes-studio.nasw.heiyu.space/xai-oauth/*` 路由到 hermes-webui:56121
+- 使用标准 `caddy:2-alpine` 镜像
+
 ## v2026.06.20
 
 - 开启 `document.private` 权限
