@@ -7,6 +7,7 @@
 - `hermes-studio.nasw.heiyu.space/preview/*` 路由到 hermes-webui:8651
 - `hermes-studio.nasw.heiyu.space/xai-oauth/*` 路由到 hermes-webui:56121
 - 使用标准 `caddy:2-alpine` 镜像
+- 修复路径路由：使用 `handle_path` 自动剥离 `/preview/` 和 `/xai-oauth/` 前缀
 
 ## v2026.06.20
 
