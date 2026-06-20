@@ -6,6 +6,10 @@ application:
     - /=http://nginx:80
   public_path:
     - /
+  health_check:
+    test_url: http://hermes-webui:8648
+    start_period: 60s
+    timeout: 5s
 
 services:
   nginx:
@@ -15,6 +19,11 @@ services:
 
   hermes-webui:
     image: ekkoye8888/hermes-web-ui:latest
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8648"]
+      interval: 5s
+      timeout: 3s
+      start_period: 30s
     environment:
       - PORT=8648
       - HERMES_HOME=/home/agent/.hermes
