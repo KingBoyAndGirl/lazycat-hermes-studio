@@ -4,6 +4,18 @@
 	https_port 0
 }
 :80 {
+	# 子域名端口前缀路由：9090-1-hermes-studio.nasw.heiyu.space → hermes-webui:9090
+	@port9090 {
+		header_regexp X-Forwarded-Host (?i)^9090-.*hermes-studio
+	}
+	handle @port9090 {
+		reverse_proxy hermes-webui:9090 {
+			lb_try_duration 30s
+			header_up Host {http.request.header.X-Forwarded-Host}
+			header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
+		}
+	}
+
 	# /preview/ → hermes-webui:8651（剥离前缀）
 	handle_path /preview/* {
 		reverse_proxy hermes-webui:8651 {
@@ -21,8 +33,6 @@
 	}
 
 	# 默认 → hermes-webui:8648
-	# header_up Host: 保留原始域名（否则 Caddy 设为 hermes-webui:8648，Socket.IO 会拒绝）
-	# header_up X-Forwarded-Host: 保留原始域名给后端 URL 生成
 	handle {
 		reverse_proxy hermes-webui:8648 {
 			lb_try_duration 30s
