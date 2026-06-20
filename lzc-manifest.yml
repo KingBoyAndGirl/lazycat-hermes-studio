@@ -12,8 +12,7 @@ services:
     image: caddy:2-alpine
     setup_script: |
       sh /lzcapp/pkg/content/setup-caddy.sh
-    environment:
-      APP_DOMAIN: ${LAZYCAT_APP_DOMAIN}
+
   hermes-webui:
     image: ekkoye8888/hermes-web-ui:latest
     environment:

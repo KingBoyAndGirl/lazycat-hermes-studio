@@ -4,24 +4,26 @@
 	https_port 0
 }
 :80 {
-	@subdomain {
-		header_regexp X-Forwarded-Host (?i)^.+-{$APP_DOMAIN}(:[0-9]+)?$
-	}
-	handle @subdomain {
-		reverse_proxy hermes-webui:8648 {
-			header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
+	# /preview/ → hermes-webui:8651（剥离前缀）
+	handle_path /preview/* {
+		reverse_proxy hermes-webui:8651 {
+			lb_try_duration 30s
 		}
 	}
 
-	handle_path /preview/* {
-		reverse_proxy hermes-webui:8651
-	}
-
+	# /xai-oauth/ → hermes-webui:56121（剥离前缀）
 	handle_path /xai-oauth/* {
-		reverse_proxy hermes-webui:56121
+		reverse_proxy hermes-webui:56121 {
+			lb_try_duration 30s
+		}
 	}
 
+	# 默认 → hermes-webui:8648
+	# header_up 保留 Ingress 设置的原始域名（避免被 Caddy 覆盖为 caddy:80）
 	handle {
-		reverse_proxy hermes-webui:8648
+		reverse_proxy hermes-webui:8648 {
+			lb_try_duration 30s
+			header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
+		}
 	}
 }
