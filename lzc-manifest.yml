@@ -3,15 +3,15 @@ application:
   privileged: true
   multi_instance: true
   routes:
-    - /=http://caddy:80
+    - /=http://nginx:80
   public_path:
     - /
 
 services:
-  caddy:
-    image: caddy:2-alpine
+  nginx:
+    image: nginx:alpine
     setup_script: |
-      sh /lzcapp/pkg/content/setup-caddy.sh
+      sh /lzcapp/pkg/content/setup-nginx.sh
 
   hermes-webui:
     image: ekkoye8888/hermes-web-ui:latest
