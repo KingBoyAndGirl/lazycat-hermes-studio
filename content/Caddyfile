@@ -1,0 +1,24 @@
+# Hermes Studio Caddyfile
+# 子域名路由 + 路径转发
+
+:80 {
+    # 匹配子域名（hermes-studio 或 8648-1-hermes-studio 等）
+    @hermes header_regexp X-Forwarded-Host (?i)hermes-studio
+
+    handle @hermes {
+        # /preview/ → hermes-webui:8651（剥离前缀）
+        handle_path /preview/* {
+            reverse_proxy hermes-webui:8651
+        }
+
+        # /xai-oauth/ → hermes-webui:56121（剥离前缀）
+        handle_path /xai-oauth/* {
+            reverse_proxy hermes-webui:56121
+        }
+
+        # 默认 → hermes-webui:8648
+        handle {
+            reverse_proxy hermes-webui:8648
+        }
+    }
+}

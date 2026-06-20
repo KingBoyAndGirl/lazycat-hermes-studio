@@ -1,5 +1,10 @@
 # Changelog
 
+## v2026.06.20-fix-caddy-routing
+
+- 修复 Caddy 路径路由：使用 `handle_path` 自动剥离 `/preview/` 和 `/xai-oauth/` 前缀
+- 保留原有 `upstreams` 配置：`/` → 8648, `/preview/` → 8651, `/xai-oauth/` → 56121
+
 ## v2026.06.20
 
 - 开启 `document.private` 权限

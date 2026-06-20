@@ -2,19 +2,32 @@ application:
   subdomain: hermes-studio
   privileged: true
   multi_instance: true
-  upstreams:
-    - location: /
-      backend: http://hermes-webui:8648/
-    - location: /preview/
-      backend: http://hermes-webui:8651/
-      disable_auto_health_checking: true
-    - location: /xai-oauth/
-      backend: http://hermes-webui:56121/
-      disable_auto_health_checking: true
+  routes:
+    - /=http://caddy:80
   public_path:
     - /
 
 services:
+  caddy:
+    image: caddy:2-alpine
+    setup_script: |
+      #!/bin/sh
+      set -e
+      CADDYFILE="/etc/caddy/Caddyfile"
+      SOURCE_CADDYFILE="/lzcapp/pkg/content/Caddyfile"
+      mkdir -p /etc/caddy
+      if [ -f "$SOURCE_CADDYFILE" ]; then
+          cp "$SOURCE_CADDYFILE" "$CADDYFILE"
+          echo "[setup] Caddyfile copied to $CADDYFILE"
+      fi
+      if [ "$DEV_ENABLE" = "1" ] && [ -f "/home/agent/.hermes-studio/Caddyfile" ]; then
+          cp "/home/agent/.hermes-studio/Caddyfile" "$CADDYFILE"
+          echo "[setup] Dev mode: using custom Caddyfile"
+      fi
+      echo "[setup] Caddy setup complete"
+    environment:
+      - APP_DOMAIN=hermes-studio
+
   hermes-webui:
     image: ekkoye8888/hermes-web-ui:latest
     environment:
@@ -104,4 +117,3 @@ services:
         printf '\n# History: write after each command (survives container kill)\nexport HISTFILE=~/.bash_history\nexport HISTSIZE=10000\nexport HISTFILESIZE=20000\nexport PROMPT_COMMAND="history -a; $PROMPT_COMMAND"\n' >> "$BASHRC"
         echo "[setup] bash history config added to .bashrc"
       fi
-
