@@ -4,17 +4,10 @@
 	https_port 0
 }
 :80 {
-	# 子域名端口前缀路由：(\d+)-*-hermesstudio → hermes-webui:<port>
-	# 匹配 9090-1-hermesstudio.nasw.heiyu.space → hermes-webui:9090
-	@port_prefix {
-		header_regexp X-Forwarded-Host (?i)^(\d+)-.*hermesstudio
-	}
-	handle @port_prefix {
-		reverse_proxy hermes-webui:{re.capture.1} {
-			lb_try_duration 30s
-			header_up Host {http.request.header.X-Forwarded-Host}
-			header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
-		}
+	# 从 X-Forwarded-Host 提取端口号（{re.capture.1} 在 reverse_proxy to 中不生效，改用 map）
+	map {>X-Forwarded-Host} {upstream_port} {
+		~(?i)^(\d+)-.*hermesstudio  {re.capture.1}
+		default                      8648
 	}
 
 	# /preview/ → hermes-webui:8651（剥离前缀）
@@ -33,9 +26,9 @@
 		}
 	}
 
-	# 默认 → hermes-webui:8648
+	# 默认 → hermes-webui:{upstream_port}（端口前缀走对应端口，否则走 8648）
 	handle {
-		reverse_proxy hermes-webui:8648 {
+		reverse_proxy hermes-webui:{upstream_port} {
 			lb_try_duration 30s
 			header_up Host {http.request.header.X-Forwarded-Host}
 			header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
