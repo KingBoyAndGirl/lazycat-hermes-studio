@@ -100,4 +100,3 @@ gh release upload "$TAG" "$LPK_PATH" --clobber
   echo "SHA256=${SHA256}"
   echo "SIZE=${SIZE}"
 } >> "$GITHUB_OUTPUT"
-
