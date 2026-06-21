@@ -3,6 +3,8 @@
 ## v2026.06.21
 
 ### 变更
+- Hermes Web UI 镜像升级到官方 `v0.6.18`
+- LazyCat 入口镜像改为 `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.18`
 - 移除上传文件大小限制（nginx + hermes-webui）
 - nginx: `client_max_body_size 0`（无限制）
 - hermes-webui: `MAX_UPLOAD_SIZE` 默认 0（无限制），可通过环境变量 `MAX_UPLOAD_SIZE` 覆盖
