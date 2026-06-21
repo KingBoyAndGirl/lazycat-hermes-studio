@@ -38,6 +38,7 @@ jobs:
         run: python3 .github/scripts/check-hermes-studio-version.py
 
       - name: Create upgrade PR
+        id: create-pr
         if: steps.check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
@@ -60,3 +61,16 @@ jobs:
             hermes-studio
           reviewers: |
             KingBoyAndGirl
+      - name: Comment on upgrade PR
+        if: steps.check.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ steps.create-pr.outputs.pull-request-number }}
+          UPSTREAM_VERSION: ${{ steps.check.outputs.upstream_version }}
+          CURRENT_VERSION: ${{ steps.check.outputs.current_version }}
+          ACR_IMAGE: ${{ steps.check.outputs.acr_image }}
+        run: |
+          gh pr comment "$PR" -F - <<EOF
+          已创建升级 PR: upstream ${UPSTREAM_VERSION} -> ACR ${ACR_IMAGE}
+          请下载 LPK 测试后合并 main。
+          EOF
