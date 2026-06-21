@@ -35,6 +35,20 @@ uv tool install <package>          # → ~/.local/bin/，重启不丢
 
 见 [CHANGELOG.md](CHANGELOG.md)
 
+## 自动化维护
+
+本仓库包含两个 GitHub Actions workflow：
+
+- `.github/workflows/check-hermes-studio-version.yml`：每天北京时间 10:00 检查 Hermes Web UI 官方新版本，发现新版本后同步镜像到 ACR，并创建升级 PR；不会自动合并。
+- `.github/workflows/release-lpk.yml`：PR 合并到 `main` 后自动打包 LPK、创建/更新 GitHub Release、上传 LPK 资产。
+
+自动检查 workflow 需要配置以下 GitHub Secrets：
+
+- `ACR_REGISTRY`：例如 `registry.cn-shanghai.aliyuncs.com`
+- `ACR_NAMESPACE`：例如 `wtjking`
+- `ACR_USERNAME`：ACR 用户名
+- `ACR_PASSWORD`：ACR 密码或访问令牌
+
 ## License
 
 [AGPL-3.0](LICENSE)
