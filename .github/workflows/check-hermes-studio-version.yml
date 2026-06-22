@@ -62,7 +62,7 @@ jobs:
           reviewers: |
             KingBoyAndGirl
       - name: Comment on upgrade PR
-        if: steps.check.outputs.changed == 'true'
+        if: steps.check.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ steps.create-pr.outputs.pull-request-number }}
