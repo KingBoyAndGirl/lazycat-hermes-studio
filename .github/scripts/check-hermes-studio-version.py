@@ -14,7 +14,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -27,6 +27,7 @@ MANIFEST_PATH = Path(os.environ.get("MANIFEST_PATH", "lzc-manifest.yml"))
 CHANGELOG_PATH = Path(os.environ.get("CHANGELOG_PATH", "CHANGELOG.md"))
 PACKAGE_PATH = Path(os.environ.get("PACKAGE_PATH", "package.yml"))
 DRY_RUN = os.environ.get("DRY_RUN", "false").lower() in {"1", "true", "yes"}
+PACKAGE_VERSION_TIMEZONE = timezone(timedelta(hours=8))
 
 SEMVER_RE = re.compile(r"^v?(\d+)\.(\d+)\.(\d+)$")
 
@@ -34,6 +35,22 @@ SEMVER_RE = re.compile(r"^v?(\d+)\.(\d+)\.(\d+)$")
 def run(cmd: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
     print("+ " + " ".join(cmd))
     return subprocess.run(cmd, check=check, text=True, capture_output=True)
+
+
+def run_with_input(
+    cmd: list[str],
+    *,
+    input_text: str,
+    check: bool = True,
+) -> subprocess.CompletedProcess[str]:
+    print("+ " + " ".join(cmd))
+    return subprocess.run(
+        cmd,
+        check=check,
+        text=True,
+        capture_output=True,
+        input=input_text,
+    )
 
 
 def read_text(path: Path) -> str:
@@ -75,7 +92,13 @@ def current_manifest_image() -> str:
     escaped_image = re.escape(f"{ACR_REGISTRY}/{ACR_NAMESPACE}/{APP_IMAGE_NAME}")
     match = re.search(rf"^\s*image:\s*({escaped_image}:[^\s]+)", text, re.MULTILINE)
     if not match:
-        raise RuntimeError(f"未在 {MANIFEST_PATH} 找到 ACR 镜像行")
+        image_lines = [line.strip() for line in text.splitlines() if line.strip().startswith("image:")]
+        found = "; ".join(image_lines) if image_lines else "<none>"
+        raise RuntimeError(
+            f"未在 {MANIFEST_PATH} 找到期望的 ACR 镜像行，"
+            f"期望前缀为 {ACR_REGISTRY}/{ACR_NAMESPACE}/{APP_IMAGE_NAME}: ，"
+            f"实际 image 行：{found}"
+        )
     return match.group(1)
 
 
@@ -100,7 +123,15 @@ def login_acr() -> None:
     password = os.environ.get("ACR_PASSWORD", "").strip()
     if not username or not password:
         raise RuntimeError("缺少 ACR_USERNAME 或 ACR_PASSWORD，无法推送新镜像")
-    run(["docker", "login", ACR_REGISTRY, "--username", username, "--password-stdin"], check=False)
+    proc = run_with_input(
+        ["docker", "login", ACR_REGISTRY, "--username", username, "--password-stdin"],
+        input_text=password + "\n",
+        check=False,
+    )
+    if proc.returncode != 0:
+        stderr = (proc.stderr or proc.stdout or "").strip()
+        detail = f": {stderr}" if stderr else ""
+        raise RuntimeError(f"docker login {ACR_REGISTRY} 失败{detail}")
 
 
 def mirror_image(version: str) -> str:
@@ -145,10 +176,11 @@ def update_manifest(old_image: str, new_image: str) -> None:
 
 
 def update_changelog(date_version: str, upstream_version: str, acr_image: str) -> None:
+    upstream_display = upstream_version if upstream_version.startswith("v") else f"v{upstream_version}"
     section = (
         f"## v{date_version}\n\n"
         "### 变更\n"
-        f"- Hermes Web UI 镜像升级到官方 `v{upstream_version}`\n"
+        f"- Hermes Web UI 镜像升级到官方 `{upstream_display}`\n"
         f"- LazyCat 入口镜像改为 `{acr_image}`\n"
         "\n"
         "---\n"
@@ -189,7 +221,7 @@ def main() -> int:
         raise RuntimeError("当前镜像版本或上游最新版本不是语义化版本")
 
     acr_image = f"{ACR_REGISTRY}/{ACR_NAMESPACE}/{APP_IMAGE_NAME}:{upstream_version}"
-    date_version = datetime.now(timezone.utc).strftime("%Y.%m.%d")
+    date_version = datetime.now(PACKAGE_VERSION_TIMEZONE).strftime("%Y.%m.%d")
 
     print(f"当前 manifest 镜像：{current_image}")
     print(f"上游最新版本：{upstream_version}")
