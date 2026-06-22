@@ -1,3 +1,10 @@
+## v2026.06.22
+
+### 变更
+- 延长平台级与 `hermes-webui` 容器级健康检查宽限期到 600 秒，避免首次启动 / overlay snapshot / bootstrap 阶段被过早判失败
+
+---
+
 # Hermes Studio 懒猫微服版 更新日志
 
 ## v2026.06.21
