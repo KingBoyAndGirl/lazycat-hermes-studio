@@ -8,7 +8,7 @@ application:
     - /
   health_check:
     test_url: http://hermes-webui:8648
-    start_period: 60s
+    start_period: 600s
     timeout: 5s
 
 services:
@@ -23,7 +23,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8648"]
       interval: 5s
       timeout: 3s
-      start_period: 30s
+      start_period: 600s
     environment:
       - PORT=8648
       - HERMES_HOME=/home/agent/.hermes
