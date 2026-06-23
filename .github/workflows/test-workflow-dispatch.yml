@@ -13,8 +13,14 @@ jobs:
     name: Check upstream and prepare upgrade PR
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Print dispatch context
         run: |
-          echo "stage1 dispatch is working"
+          echo "stage2 dispatch is working"
           echo "ref=${GITHUB_REF}"
           echo "sha=${GITHUB_SHA}"
