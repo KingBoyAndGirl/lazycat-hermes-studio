@@ -3,12 +3,18 @@ name: Test workflow dispatch
 "on":
   workflow_dispatch: {}
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
-  echo:
+  check:
+    name: Check upstream and prepare upgrade PR
     runs-on: ubuntu-latest
     steps:
       - name: Print dispatch context
         run: |
-          echo "workflow_dispatch is working"
+          echo "stage1 dispatch is working"
           echo "ref=${GITHUB_REF}"
           echo "sha=${GITHUB_SHA}"
