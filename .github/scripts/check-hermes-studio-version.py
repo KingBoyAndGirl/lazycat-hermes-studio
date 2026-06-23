@@ -32,9 +32,25 @@ PACKAGE_VERSION_TIMEZONE = timezone(timedelta(hours=8))
 SEMVER_RE = re.compile(r"^v?(\d+)\.(\d+)\.(\d+)$")
 
 
-def run(cmd: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
+def run(
+    cmd: list[str],
+    *,
+    check: bool = True,
+    timeout: Optional[float] = None,
+) -> subprocess.CompletedProcess[str]:
     print("+ " + " ".join(cmd))
-    return subprocess.run(cmd, check=check, text=True, capture_output=True)
+    proc = subprocess.run(
+        cmd,
+        check=check,
+        text=True,
+        capture_output=True,
+        timeout=timeout,
+    )
+    if proc.stdout:
+        print(proc.stdout, end="" if proc.stdout.endswith("\n") else "\n")
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr, end="" if proc.stderr.endswith("\n") else "\n")
+    return proc
 
 
 def run_with_input(
@@ -42,15 +58,22 @@ def run_with_input(
     *,
     input_text: str,
     check: bool = True,
+    timeout: Optional[float] = None,
 ) -> subprocess.CompletedProcess[str]:
     print("+ " + " ".join(cmd))
-    return subprocess.run(
+    proc = subprocess.run(
         cmd,
         check=check,
         text=True,
         capture_output=True,
         input=input_text,
+        timeout=timeout,
     )
+    if proc.stdout:
+        print(proc.stdout, end="" if proc.stdout.endswith("\n") else "\n")
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr, end="" if proc.stderr.endswith("\n") else "\n")
+    return proc
 
 
 def read_text(path: Path) -> str:
@@ -109,12 +132,15 @@ def image_version(image: str) -> str:
     return match.group(1)
 
 
-def docker_image_exists(image: str) -> bool:
-    proc = subprocess.run(
-        ["docker", "buildx", "imagetools", "inspect", image],
-        text=True,
-        capture_output=True,
-    )
+def docker_image_exists(image: str, *, timeout: float = 120) -> bool:
+    try:
+        proc = run(
+            ["docker", "buildx", "imagetools", "inspect", image],
+            check=False,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"检查镜像是否存在超时（>{timeout}s）：{image}") from exc
     return proc.returncode == 0
 
 
@@ -138,9 +164,14 @@ def mirror_image(version: str) -> str:
     upstream = f"{UPSTREAM_IMAGE}:{version}"
     acr_image = f"{ACR_REGISTRY}/{ACR_NAMESPACE}/{APP_IMAGE_NAME}:{version}"
 
-    run(["docker", "buildx", "imagetools", "inspect", upstream])
+    print(f"验证 upstream 镜像是否存在：{upstream}")
+    try:
+        run(["docker", "buildx", "imagetools", "inspect", upstream], timeout=180)
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"检查 upstream 镜像超时（>180s）：{upstream}") from exc
 
-    if docker_image_exists(acr_image):
+    print(f"检查 ACR 目标镜像是否已存在：{acr_image}")
+    if docker_image_exists(acr_image, timeout=120):
         print(f"ACR 镜像已存在，跳过推送：{acr_image}")
         return acr_image
 
@@ -148,13 +179,21 @@ def mirror_image(version: str) -> str:
         print(f"[dry-run] 将同步镜像：{upstream} -> {acr_image}")
         return acr_image
 
+    print(f"准备登录 ACR：{ACR_REGISTRY}")
     login_acr()
-    if docker_image_exists(acr_image):
+    print(f"再次确认 ACR 目标镜像是否已存在：{acr_image}")
+    if docker_image_exists(acr_image, timeout=120):
         print(f"ACR 镜像已存在，跳过推送：{acr_image}")
         return acr_image
 
-    run(["docker", "buildx", "imagetools", "create", "--tag", acr_image, upstream])
-    if not docker_image_exists(acr_image):
+    print(f"开始同步镜像到 ACR：{upstream} -> {acr_image}")
+    try:
+        run(["docker", "buildx", "imagetools", "create", "--tag", acr_image, upstream], timeout=900)
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError(f"同步镜像到 ACR 超时（>900s）：{upstream} -> {acr_image}") from exc
+
+    print(f"验证 ACR 目标镜像是否已可见：{acr_image}")
+    if not docker_image_exists(acr_image, timeout=180):
         raise RuntimeError(f"推送后仍无法检查 ACR 镜像：{acr_image}")
     return acr_image
 
