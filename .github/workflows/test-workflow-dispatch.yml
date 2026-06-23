@@ -42,3 +42,6 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ github.token }}
+          commit-message: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
+          branch: ${{ format('automation/hermes-webui-{0}', steps.check.outputs.upstream_version) }}
+          title: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
