@@ -35,7 +35,7 @@ jobs:
           MANIFEST_PATH: lzc-manifest.yml
           CHANGELOG_PATH: CHANGELOG.md
           PACKAGE_PATH: package.yml
-        run: python3 .github/scripts/check-hermes-studio-version.py
+        run: python3 -u .github/scripts/check-hermes-studio-version.py
 
       - name: Create or update upgrade PR
         id: create-pr
