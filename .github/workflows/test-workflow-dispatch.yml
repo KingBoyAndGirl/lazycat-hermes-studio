@@ -35,6 +35,9 @@ jobs:
         run: |
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "upstream_version=v0.6.19" >> "$GITHUB_OUTPUT"
+          echo "current_version=v0.6.18" >> "$GITHUB_OUTPUT"
+          echo "acr_image=registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.19" >> "$GITHUB_OUTPUT"
+          echo "package_version=2026.06.23" >> "$GITHUB_OUTPUT"
 
       - name: Create upgrade PR
         id: create-pr
@@ -45,3 +48,12 @@ jobs:
           commit-message: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
           branch: ${{ format('automation/hermes-webui-{0}', steps.check.outputs.upstream_version) }}
           title: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
+          body: |
+            自动检查发现 Hermes Web UI 有新版本。
+
+            - 上游版本：`${{ steps.check.outputs.upstream_version }}`
+            - 当前版本：`${{ steps.check.outputs.current_version }}`
+            - 目标 ACR 镜像：`${{ steps.check.outputs.acr_image }}`
+            - LPK package 版本：`${{ steps.check.outputs.package_version }}`
+
+            本 PR 只准备升级变更，不自动合并、不自动发布。需要人工确认 LPK 测试通过后再合并 main。
