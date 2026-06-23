@@ -41,7 +41,25 @@ jobs:
 
       - name: Create upgrade PR
         id: create-pr
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          echo "pull-request-number=123" >> "$GITHUB_OUTPUT"
-          echo "would create PR for ${{ steps.check.outputs.upstream_version }}"
+        if: false
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          commit-message: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
+          branch: ${{ format('automation/hermes-webui-{0}', steps.check.outputs.upstream_version) }}
+          delete-branch: false
+          title: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
+          body: |
+            自动检查发现 Hermes Web UI 有新版本。
+
+            - 上游版本：`${{ steps.check.outputs.upstream_version }}`
+            - 当前版本：`${{ steps.check.outputs.current_version }}`
+            - 目标 ACR 镜像：`${{ steps.check.outputs.acr_image }}`
+            - LPK package 版本：`${{ steps.check.outputs.package_version }}`
+
+            本 PR 只准备升级变更，不自动合并、不自动发布。需要人工确认 LPK 测试通过后再合并 main。
+          labels: |
+            automation
+            hermes-studio
+          reviewers: |
+            KingBoyAndGirl
