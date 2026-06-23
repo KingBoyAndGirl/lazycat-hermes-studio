@@ -1,10 +1,10 @@
 name: Check Hermes Studio upgrade
 
-on:
+"on":
+  workflow_dispatch: {}
   schedule:
     # 北京时间每天 10:00 检查一次；发现新版本时只创建升级 PR，不自动合并。
     - cron: '0 2 * * *'
-  workflow_dispatch:
 
 permissions:
   contents: write
