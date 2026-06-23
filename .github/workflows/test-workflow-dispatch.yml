@@ -45,12 +45,6 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ github.token }}
-          body: |
-            自动检查发现 Hermes Web UI 有新版本。
-
-            - 上游版本：`${{ steps.check.outputs.upstream_version }}`
-            - 当前版本：`${{ steps.check.outputs.current_version }}`
-            - 目标 ACR 镜像：`${{ steps.check.outputs.acr_image }}`
-            - LPK package 版本：`${{ steps.check.outputs.package_version }}`
-
-            本 PR 只准备升级变更，不自动合并、不自动发布。需要人工确认 LPK 测试通过后再合并 main。
+          commit-message: feat-upgrade-hermes-webui-image
+          branch: automation/hermes-webui-v0-6-19
+          title: feat-upgrade-hermes-webui-image
