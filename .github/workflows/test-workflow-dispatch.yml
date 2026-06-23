@@ -33,7 +33,15 @@ jobs:
           CHANGELOG_PATH: CHANGELOG.md
           PACKAGE_PATH: package.yml
         run: |
-          echo "stage3 script step schema is accepted"
-          echo "ACR_REGISTRY=${ACR_REGISTRY}"
-          echo "UPSTREAM_REPO=${UPSTREAM_REPO}"
-          echo "PACKAGE_PATH=${PACKAGE_PATH}"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "upstream_version=v0.6.19" >> "$GITHUB_OUTPUT"
+          echo "current_version=v0.6.18" >> "$GITHUB_OUTPUT"
+          echo "acr_image=registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.19" >> "$GITHUB_OUTPUT"
+          echo "package_version=2026.06.23" >> "$GITHUB_OUTPUT"
+
+      - name: Create upgrade PR
+        id: create-pr
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          echo "pull-request-number=123" >> "$GITHUB_OUTPUT"
+          echo "would create PR for ${{ steps.check.outputs.upstream_version }}"
