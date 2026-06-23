@@ -39,13 +39,20 @@ def run(
     timeout: Optional[float] = None,
 ) -> subprocess.CompletedProcess[str]:
     print("+ " + " ".join(cmd))
-    proc = subprocess.run(
-        cmd,
-        check=check,
-        text=True,
-        capture_output=True,
-        timeout=timeout,
-    )
+    try:
+        proc = subprocess.run(
+            cmd,
+            check=check,
+            text=True,
+            capture_output=True,
+            timeout=timeout,
+        )
+    except subprocess.CalledProcessError as exc:
+        if exc.stdout:
+            print(exc.stdout, end="" if exc.stdout.endswith("\n") else "\n")
+        if exc.stderr:
+            print(exc.stderr, file=sys.stderr, end="" if exc.stderr.endswith("\n") else "\n")
+        raise
     if proc.stdout:
         print(proc.stdout, end="" if proc.stdout.endswith("\n") else "\n")
     if proc.stderr:
@@ -176,7 +183,7 @@ def mirror_image(version: str) -> str:
             [
                 "skopeo",
                 "copy",
-                "--multi-arch=linux/amd64,linux/arm64",
+                "--all",
                 "--dest-creds",
                 f"{username}:{password}",
                 f"docker://{upstream}",
