@@ -1,0 +1,14 @@
+name: Test workflow dispatch
+
+"on":
+  workflow_dispatch: {}
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print dispatch context
+        run: |
+          echo "workflow_dispatch is working"
+          echo "ref=${GITHUB_REF}"
+          echo "sha=${GITHUB_SHA}"
