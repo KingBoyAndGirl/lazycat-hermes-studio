@@ -10,7 +10,6 @@ This workflow intentionally does not merge or publish. It only:
 
 from __future__ import annotations
 
-import json
 import os
 import re
 import subprocess
@@ -133,59 +132,10 @@ def image_version(image: str) -> str:
     return match.group(1)
 
 
-def inspect_raw(image: str, *, timeout: float = 180) -> dict:
+def image_exists(image: str, *, timeout: float = 120) -> bool:
     try:
         proc = run(
-            ["docker", "buildx", "imagetools", "inspect", "--raw", image],
-            timeout=timeout,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError(f"读取镜像原始 manifest 超时（>{timeout}s）：{image}") from exc
-    try:
-        return json.loads(proc.stdout)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"无法解析镜像原始 manifest JSON：{image}") from exc
-
-
-def upstream_runtime_sources(image: str) -> list[str]:
-    raw = inspect_raw(image)
-    manifests = raw.get("manifests")
-    if not isinstance(manifests, list):
-        return [image]
-
-    runtime_sources: list[str] = []
-    seen: set[str] = set()
-    for manifest in manifests:
-        if not isinstance(manifest, dict):
-            continue
-        platform = manifest.get("platform") or {}
-        if platform.get("os") != "linux":
-            continue
-        arch = platform.get("architecture")
-        if arch not in {"amd64", "arm64"}:
-            continue
-        digest = manifest.get("digest")
-        if not isinstance(digest, str) or not digest.startswith("sha256:"):
-            continue
-        source = f"{UPSTREAM_IMAGE}@{digest}"
-        if source in seen:
-            continue
-        seen.add(source)
-        runtime_sources.append(source)
-
-    if runtime_sources:
-        print("将仅同步运行时平台 manifests（跳过 attestation/unknown manifests）:")
-        for source in runtime_sources:
-            print(f"- {source}")
-        return runtime_sources
-
-    return [image]
-
-
-def docker_image_exists(image: str, *, timeout: float = 120) -> bool:
-    try:
-        proc = run(
-            ["docker", "buildx", "imagetools", "inspect", image],
+            ["skopeo", "inspect", f"docker://{image}"],
             check=False,
             timeout=timeout,
         )
@@ -194,20 +144,12 @@ def docker_image_exists(image: str, *, timeout: float = 120) -> bool:
     return proc.returncode == 0
 
 
-def login_acr() -> None:
+def required_acr_creds() -> tuple[str, str]:
     username = os.environ.get("ACR_USERNAME", "").strip()
     password = os.environ.get("ACR_PASSWORD", "").strip()
     if not username or not password:
         raise RuntimeError("缺少 ACR_USERNAME 或 ACR_PASSWORD，无法推送新镜像")
-    proc = run_with_input(
-        ["docker", "login", ACR_REGISTRY, "--username", username, "--password-stdin"],
-        input_text=password + "\n",
-        check=False,
-    )
-    if proc.returncode != 0:
-        stderr = (proc.stderr or proc.stdout or "").strip()
-        detail = f": {stderr}" if stderr else ""
-        raise RuntimeError(f"docker login {ACR_REGISTRY} 失败{detail}")
+    return username, password
 
 
 def mirror_image(version: str) -> str:
@@ -215,13 +157,11 @@ def mirror_image(version: str) -> str:
     acr_image = f"{ACR_REGISTRY}/{ACR_NAMESPACE}/{APP_IMAGE_NAME}:{version}"
 
     print(f"验证 upstream 镜像是否存在：{upstream}")
-    try:
-        run(["docker", "buildx", "imagetools", "inspect", upstream], timeout=180)
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError(f"检查 upstream 镜像超时（>180s）：{upstream}") from exc
+    if not image_exists(upstream, timeout=180):
+        raise RuntimeError(f"upstream 镜像不存在：{upstream}")
 
     print(f"检查 ACR 目标镜像是否已存在：{acr_image}")
-    if docker_image_exists(acr_image, timeout=120):
+    if image_exists(acr_image, timeout=120):
         print(f"ACR 镜像已存在，跳过推送：{acr_image}")
         return acr_image
 
@@ -229,22 +169,26 @@ def mirror_image(version: str) -> str:
         print(f"[dry-run] 将同步镜像：{upstream} -> {acr_image}")
         return acr_image
 
-    print(f"准备登录 ACR：{ACR_REGISTRY}")
-    login_acr()
-    print(f"再次确认 ACR 目标镜像是否已存在：{acr_image}")
-    if docker_image_exists(acr_image, timeout=120):
-        print(f"ACR 镜像已存在，跳过推送：{acr_image}")
-        return acr_image
-
-    sources = upstream_runtime_sources(upstream)
-    print(f"开始同步镜像到 ACR：{upstream} -> {acr_image}")
+    username, password = required_acr_creds()
+    print(f"开始使用 skopeo 同步镜像到 ACR：{upstream} -> {acr_image}")
     try:
-        run(["docker", "buildx", "imagetools", "create", "--tag", acr_image, *sources], timeout=900)
+        run(
+            [
+                "skopeo",
+                "copy",
+                "--multi-arch=linux/amd64,linux/arm64",
+                "--dest-creds",
+                f"{username}:{password}",
+                f"docker://{upstream}",
+                f"docker://{acr_image}",
+            ],
+            timeout=900,
+        )
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError(f"同步镜像到 ACR 超时（>900s）：{upstream} -> {acr_image}") from exc
 
     print(f"验证 ACR 目标镜像是否已可见：{acr_image}")
-    if not docker_image_exists(acr_image, timeout=180):
+    if not image_exists(acr_image, timeout=180):
         raise RuntimeError(f"推送后仍无法检查 ACR 镜像：{acr_image}")
     return acr_image
 
