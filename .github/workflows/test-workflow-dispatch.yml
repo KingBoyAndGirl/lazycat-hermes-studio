@@ -35,9 +35,6 @@ jobs:
         run: |
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "upstream_version=v0.6.19" >> "$GITHUB_OUTPUT"
-          echo "current_version=v0.6.18" >> "$GITHUB_OUTPUT"
-          echo "acr_image=registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.19" >> "$GITHUB_OUTPUT"
-          echo "package_version=2026.06.23" >> "$GITHUB_OUTPUT"
 
       - name: Create upgrade PR
         id: create-pr
@@ -45,6 +42,6 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ github.token }}
-          commit-message: feat-upgrade-hermes-webui-image
-          branch: automation/hermes-webui-v0-6-19
-          title: feat-upgrade-hermes-webui-image
+          commit-message: feat: upgrade hermes-webui image to ${{ steps.check.outputs.upstream_version }}
+          branch: automation/hermes-webui-${{ steps.check.outputs.upstream_version }}
+          title: feat: upgrade hermes-webui image to ${{ steps.check.outputs.upstream_version }}
