@@ -37,37 +37,94 @@ jobs:
           PACKAGE_PATH: package.yml
         run: python3 .github/scripts/check-hermes-studio-version.py
 
-      - name: Create upgrade PR
+      - name: Create or update upgrade PR
         id: create-pr
         if: steps.check.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
-          branch: ${{ format('automation/hermes-webui-{0}', steps.check.outputs.upstream_version) }}
-          delete-branch: false
-          title: ${{ format('feat: upgrade hermes-webui image to {0}', steps.check.outputs.upstream_version) }}
-          body: |
-            自动检查发现 Hermes Web UI 有新版本。
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CURRENT_VERSION: ${{ steps.check.outputs.current_version }}
+          ACR_IMAGE: ${{ steps.check.outputs.acr_image }}
+          PACKAGE_VERSION: ${{ steps.check.outputs.package_version }}
+          UPSTREAM_VERSION: ${{ steps.check.outputs.upstream_version }}
+        run: |
+          set -euo pipefail
 
-            - 上游版本：`${{ steps.check.outputs.upstream_version }}`
-            - 当前版本：`${{ steps.check.outputs.current_version }}`
-            - 目标 ACR 镜像：`${{ steps.check.outputs.acr_image }}`
-            - LPK package 版本：`${{ steps.check.outputs.package_version }}`
+          BRANCH="automation/hermes-webui-${UPSTREAM_VERSION}"
+          TITLE="feat: upgrade hermes-webui image to ${UPSTREAM_VERSION}"
+          BODY_FILE="$(mktemp)"
 
-            本 PR 只准备升级变更，不自动合并、不自动发布。需要人工确认 LPK 测试通过后再合并 main。
-          labels: |
-            automation
-            hermes-studio
-          reviewers: |
-            KingBoyAndGirl
+          cat > "$BODY_FILE" <<EOF
+          自动检查发现 Hermes Web UI 有新版本。
+
+          - 上游版本：`${UPSTREAM_VERSION}`
+          - 当前版本：`${CURRENT_VERSION}`
+          - 目标 ACR 镜像：`${ACR_IMAGE}`
+          - LPK package 版本：`${PACKAGE_VERSION}`
+
+          本 PR 只准备升级变更，不自动合并、不自动发布。需要人工确认 LPK 测试通过后再合并 main。
+          EOF
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B "$BRANCH"
+          git add package.yml lzc-manifest.yml CHANGELOG.md
+
+          if git diff --cached --quiet; then
+            echo "No metadata changes staged; continuing to PR sync."
+          else
+            git commit -m "$TITLE"
+            git push --force-with-lease origin "$BRANCH"
+          fi
+
+          BRANCH="$BRANCH" TITLE="$TITLE" BODY_FILE="$BODY_FILE" python3 - <<'PY2'
+          import json
+          import os
+          import urllib.parse
+          import urllib.request
+
+          repo = os.environ['GITHUB_REPOSITORY']
+          owner = repo.split('/', 1)[0]
+          branch = os.environ['BRANCH']
+          title = os.environ['TITLE']
+          body = open(os.environ['BODY_FILE'], encoding='utf-8').read()
+          token = os.environ['GITHUB_TOKEN']
+          api = f'https://api.github.com/repos/{repo}'
+          headers = {
+              'Authorization': f'token {token}',
+              'Accept': 'application/vnd.github+json',
+              'User-Agent': 'Hermes-Agent-Workflow',
+          }
+
+          def req(method, url, payload=None):
+              data = None if payload is None else json.dumps(payload).encode()
+              request = urllib.request.Request(
+                  url,
+                  data=data,
+                  headers={**headers, 'Content-Type': 'application/json'},
+                  method=method,
+              )
+              with urllib.request.urlopen(request) as response:
+                  return json.load(response)
+
+          query = urllib.parse.urlencode({'state': 'open', 'head': f'{owner}:{branch}', 'base': 'main'})
+          pulls = req('GET', f'{api}/pulls?{query}')
+          if pulls:
+              pr = req('PATCH', f"{api}/pulls/{pulls[0]['number']}", {'title': title, 'body': body})
+          else:
+              pr = req('POST', f'{api}/pulls', {'title': title, 'body': body, 'head': branch, 'base': 'main'})
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as fh:
+              fh.write(f"pull-request-number={pr['number']}\n")
+          print(f"Prepared PR #{pr['number']}: {pr['html_url']}")
+          PY2
+
       - name: Comment on upgrade PR
         if: steps.check.outputs.changed == 'true' && steps.create-pr.outputs.pull-request-number != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ steps.create-pr.outputs.pull-request-number }}
           UPSTREAM_VERSION: ${{ steps.check.outputs.upstream_version }}
-          CURRENT_VERSION: ${{ steps.check.outputs.current_version }}
           ACR_IMAGE: ${{ steps.check.outputs.acr_image }}
         run: |
           gh pr comment "$PR" -F - <<EOF
