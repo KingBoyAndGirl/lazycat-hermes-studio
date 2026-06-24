@@ -113,3 +113,13 @@ services:
       fi
 
 
+      # --- Ensure ~/.local/bin survives into login-shell PATH snapshots ---
+      for PROFILE in /home/agent/.profile /home/agent/.bash_profile; do
+        touch "$PROFILE"
+        if ! grep -q '/home/agent/.local/bin' "$PROFILE" 2>/dev/null; then
+          printf '\n# LazyCat: ensure user-local CLI tools are on PATH\nexport PATH="/home/agent/.local/bin:$PATH"\n' >> "$PROFILE"
+          echo "[setup] PATH export added to $PROFILE"
+        fi
+      done
+
+

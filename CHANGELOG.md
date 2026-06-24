@@ -1,3 +1,11 @@
+## v2026.06.24
+
+### 变更
+- 在 `setup_script` 中补写 `/home/agent/.profile` 与 `/home/agent/.bash_profile` 的 PATH 导出
+- 让登录 shell 快照稳定包含 `/home/agent/.local/bin`，避免 `lzc-cli` 等用户级 CLI 在部分终端上下文中丢失
+
+---
+
 ## v2026.06.23
 
 ### 变更
