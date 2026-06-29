@@ -128,7 +128,24 @@ if [[ "$REMOTE_ASSET_SIZE" != "$SIZE" ]]; then
   exit 1
 fi
 
-curl -L --fail --silent --show-error -o "$REMOTE_LPK_PATH" "$REMOTE_ASSET_URL"
+DOWNLOAD_OK=0
+for attempt in 1 2 3 4 5 6; do
+  if curl -L --fail --silent --show-error -o "$REMOTE_LPK_PATH" "$REMOTE_ASSET_URL"; then
+    DOWNLOAD_OK=1
+    echo "远端资产下载成功（attempt=${attempt}）"
+    break
+  fi
+  if [[ "$attempt" -lt 6 ]]; then
+    echo "远端资产暂不可读（attempt=${attempt}/6），等待 5 秒后重试"
+    sleep 5
+  fi
+done
+
+if [[ "$DOWNLOAD_OK" != "1" ]]; then
+  echo "::error::远端 Release 资产下载在重试后仍失败：${REMOTE_ASSET_URL}"
+  exit 1
+fi
+
 REMOTE_SHA256="$(sha256sum "$REMOTE_LPK_PATH" | awk '{print $1}')"
 if [[ "$REMOTE_SHA256" != "$SHA256" ]]; then
   echo "::error::远端资产 SHA256 不匹配：remote=${REMOTE_SHA256} local=${SHA256}"
