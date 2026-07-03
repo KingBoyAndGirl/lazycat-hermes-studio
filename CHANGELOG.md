@@ -2,8 +2,8 @@
 
 ### 变更
 - Hermes Web UI 镜像升级到官方 `v0.6.25`
-- LazyCat 入口镜像改为 `ekkoye8888/hermes-web-ui:v0.6.25`
-- 同步 LazyCat 包版本到 `2026.07.03`
+- LazyCat 入口镜像改为 `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.25`
+- 同步 `package.yml` 包版本到 `2026.07.03`
 
 ---
 
