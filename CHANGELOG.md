@@ -1,3 +1,47 @@
+## v2026.07.05
+
+### 版本信息
+- **Hermes Studio**: v0.6.25（基于上游 EKKOLearnAI/hermes-studio v0.6.25）
+- **Hermes CLI**: v0.18.0 (2026.7.1)，支持 journey 命令
+- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:2026.07.05
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.05.lpk
+
+### 核心修复
+- 🔼 **Hermes CLI 升级**：基础镜像 nousresearch/hermes-agent:latest 自动解析至 v0.18.0，新增 journey 子命令支持，修复学习轨迹 API 500 错误
+- 🧩 **包含上游未合并 PR**：
+  - PR #1903：coding agent session 导出
+  - PR #1918：定时任务 model 选择修复  
+  - PR #1924：文件面板 session workspace 支持
+
+### 变更文件
+- Dockerfile：BASE_IMAGE 重新拉取（Hermes v0.17.0 → v0.18.0）
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:2026.07.05
+- package.yml：版本号 → 2026.07.05
+
+### 构建信息
+- 源码：KingBoyAndGirl/hermes-studio main 分支（HEAD: 21ec9e87）
+- 构建时间：2026-07-05 12:42 UTC
+
+## v2026.07.04
+
+### 变更
+- 测试包：Hermes Web UI 镜像切到 `v0.6.25-pr1903-1918-1921-20260704`
+- 测试镜像 = 官方 `v0.6.25` base + PR #1903 / #1918 / #1921 源码组合构建的头部分
+- PR #1918 新增：定时任务编辑时 provider/model 持久化修复 + 卡片显示 provider/与中文模型标签
+- 构建时间：2026-07-04 03:12:19
+- 仅用于安装验证，不代表上游正式发布版本
+
+---
+
+## v2026.07.04
+
+### 变更
+- 测试包：Hermes Web UI 镜像切到 `v0.6.25-pr1903-1918-1921-20260703`
+- 该测试镜像包含上游未合并 PR #1903 / #1918 / #1921 的组合构建
+- 仅用于安装验证，不代表上游正式发布版本
+
+---
+
 ## v2026.07.03
 
 ### 变更
