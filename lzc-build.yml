@@ -18,4 +18,3 @@ compose_override:
         - /dev/fuse:/dev/fuse
       volumes:
         - /data/playground/docker.sock:/var/run/docker.sock
-        - /lzcsys/var/cache/hermes-studio:/lzcapp/cache
