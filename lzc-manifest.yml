@@ -35,7 +35,7 @@ services:
       - HERMES_ALLOW_ROOT_GATEWAY=1
     binds:
       - /lzcapp/documents/{{ .S.DeployUID }}:/home/agent
-      - /lzcapp/var/cache:/lzcapp/cache
+      - /lzcsys/var/cache/hermes-studio:/lzcapp/cache
 
     setup_script: |
       #!/bin/sh
