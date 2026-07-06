@@ -163,14 +163,8 @@ services:
       fi
 
       # --- dev/debug hosts (survives overlay resets) ---
-      if ! grep -q 'canway.heiyu.space' /etc/hosts 2>/dev/null; then
-        echo '192.168.124.18 canway.heiyu.space canway' >> /etc/hosts
-        echo '[setup] canway hosts added'
       fi
       GW=$(ip route 2>/dev/null | grep default | awk '{print $3}')
-      if [ -n "$GW" ] && ! grep -q 'nasw.heiyu.space' /etc/hosts 2>/dev/null; then
-        echo "$GW nasw.heiyu.space nasw" >> /etc/hosts
-        echo '[setup] nasw hosts added'
       fi
 
 
