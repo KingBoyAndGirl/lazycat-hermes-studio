@@ -33,6 +33,8 @@ services:
       - HERMES_WEB_UI_XAI_CALLBACK_BIND_HOST=0.0.0.0
       - PATH=/home/agent/.local/bin:/opt/hermes/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - HERMES_ALLOW_ROOT_GATEWAY=1
+      - LANG=zh_CN.UTF-8
+      - LC_ALL=zh_CN.UTF-8
     binds:
       - /lzcapp/documents/{{ .S.DeployUID }}:/home/agent
       - /lzcsys/var/cache/hermes-studio:/lzcapp/cache
@@ -42,6 +44,12 @@ services:
       # base/ = image content snapshot (replaced on image update)
       # upper/ = user changes only (always preserved across updates)
       # /home excluded - already persistent via /lzcapp/documents/<uid> bind
+
+      # --- Ensure Chinese locale ---
+      if ! locale -a 2>/dev/null | grep -q zh_CN.utf8; then
+        echo "[setup] generating zh_CN.UTF-8 locale..."
+        localedef -i zh_CN -f UTF-8 zh_CN.UTF-8 2>/dev/null || true
+      fi
 
       ROOTFS=/lzcapp/cache/rootfs
       BASE=$ROOTFS/base
