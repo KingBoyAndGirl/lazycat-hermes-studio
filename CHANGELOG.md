@@ -1,3 +1,29 @@
+## v2026.07.06
+
+### 版本信息
+- **Hermes Studio**: v0.6.26（基于上游 EKKOLearnAI/hermes-studio v0.6.26）
+- **Hermes CLI**: v0.18.0 (2026.7.1)，支持 journey 命令
+- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:2026.07.06
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.06.lpk
+
+### 上游合并
+- 🔄 基于上游 v0.6.26 官方发布版
+- 🆕 新增 Ekko Agent runtime（本地 agent 运行时）
+- 🆕 新增 group chat baseline/approval/streaming 测试
+- 🛠️ ChatInput 高度设置、Codex 上下文稳定性改进
+
+### 保留修复
+- 🧩 包含上游未合并 PR：
+  - PR #1903：coding agent session 导出
+  - PR #1918：定时任务 model 选择修复
+  - PR #1924：文件面板 session workspace 支持
+
+### 变更文件
+- Fork: KingBoyAndGirl/hermes-studio main（merge upstream v0.6.26）
+- Dockerfile：BASE_IMAGE=nousresearch/hermes-agent:latest
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:2026.07.06
+- package.yml：版本号 → 2026.07.06
+
 ## v2026.07.05
 
 ### 版本信息
