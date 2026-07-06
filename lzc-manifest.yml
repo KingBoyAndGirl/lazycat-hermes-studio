@@ -153,10 +153,14 @@ services:
           printf '\n# LazyCat: ensure user-local CLI tools are on PATH\nexport PATH="/home/agent/.local/bin:$PATH"\n' >> "$PROFILE"
           echo "[setup] PATH export added to $PROFILE"
         fi
+      done
 
       # --- Ensure root can read SSH config from persistent home ---
       mkdir -p /root/.ssh
-      [ ! -L /root/.ssh/config ] && ln -sf /home/agent/.ssh/config /root/.ssh/config && echo '[setup] SSH config linked to /home/agent'
+      if [ ! -L /root/.ssh/config ]; then
+        ln -sf /home/agent/.ssh/config /root/.ssh/config
+        echo '[setup] SSH config linked to /home/agent'
+      fi
 
       # --- dev/debug hosts (survives overlay resets) ---
       if ! grep -q 'canway.heiyu.space' /etc/hosts 2>/dev/null; then
@@ -164,9 +168,9 @@ services:
         echo '[setup] canway hosts added'
       fi
       GW=$(ip route 2>/dev/null | grep default | awk '{print $3}')
-      [ -n "$GW" ] && ! grep -q 'nasw.heiyu.space' /etc/hosts 2>/dev/null && echo "$GW nasw.heiyu.space nasw" >> /etc/hosts && echo '[setup] nasw hosts added'
-
-
-      done
+      if [ -n "$GW" ] && ! grep -q 'nasw.heiyu.space' /etc/hosts 2>/dev/null; then
+        echo "$GW nasw.heiyu.space nasw" >> /etc/hosts
+        echo '[setup] nasw hosts added'
+      fi
 
 
