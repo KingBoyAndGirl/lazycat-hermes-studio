@@ -154,6 +154,10 @@ services:
           echo "[setup] PATH export added to $PROFILE"
         fi
 
+      # --- Ensure root can read SSH config from persistent home ---
+      mkdir -p /root/.ssh
+      [ ! -L /root/.ssh/config ] && ln -sf /home/agent/.ssh/config /root/.ssh/config && echo '[setup] SSH config linked to /home/agent'
+
       # --- dev/debug hosts (survives overlay resets) ---
       if ! grep -q 'canway.heiyu.space' /etc/hosts 2>/dev/null; then
         echo '192.168.124.18 canway.heiyu.space canway' >> /etc/hosts
