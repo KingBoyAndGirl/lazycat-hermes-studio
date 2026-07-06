@@ -81,12 +81,26 @@ services:
             cp -a "/$d" "$BASE/$d" &
             CP_PID=$!
             while kill -0 $CP_PID 2>/dev/null; do
-              DST_SIZE=$(du -sh "$BASE/$d" 2>/dev/null | cut -f1)
-              echo "[setup]   /$d: $DST_SIZE (of ~$SRC_SIZE) copied"
               sleep 3
+              DST_SIZE=$(du -sh "$BASE/$d" 2>/dev/null | cut -f1)
+              PCT=$(echo "$DST_SIZE $SRC_SIZE" | awk '
+                { v1=$1; u1=""; v2=$2; u2="";
+                  if($1~/[A-Za-z]$/) { u1=substr($1,length($1)); v1=substr($1,1,length($1)-1) }
+                  if($2~/[A-Za-z]$/) { u2=substr($2,length($2)); v2=substr($2,1,length($2)-1) }
+                  b1=v1*(u1=="G"?1073741824:u1=="M"?1048576:u1=="K"?1024:1);
+                  b2=v2*(u2=="G"?1073741824:u2=="M"?1048576:u2=="K"?1024:1);
+                  if(b2>0) p=int(b1*100/b2); else p=100;
+                  if(p>100) p=100;
+                  w=30; f=int(p*w/100);
+                  bar=""; for(i=0;i<f;i++) bar=bar"#"; for(i=f;i<w;i++) bar=bar"-";
+                  printf "%d %s", p, bar;
+                }')
+              PCTV=$(echo "$PCT" | cut -d" " -f1)
+              BAR=$(echo "$PCT" | cut -d" " -f2)
+              printf "[setup] [%s] %3d%%  %s/%s  /$d\n" "$BAR" "$PCTV" "$DST_SIZE" "$SRC_SIZE"
             done
             wait $CP_PID
-            echo "[setup]   /$d done"
+            printf "[setup] [##############################] 100%%  %s  /$d done\n" "$SRC_SIZE"
           fi
         done
         echo "$CURRENT_ID" > "$ROOTFS/.image-id"
