@@ -13,6 +13,7 @@
 - 🛠️ ChatInput 高度设置、Codex 上下文稳定性改进
 
 ### LPK 增强
+- 🚀 启动优化：指纹改为 package.yml+manifest.yml，正常重启跳过 cp（~30秒 → 瞬间）
 - 🔧 02 机器 NVMe 缓存绑定：rootfs cache 从 SATA HDD 迁移到 `/lzcsys/var/cache/hermes-studio`（首次安装从 50+ 分钟降到 ~30 秒）
 - 🔧 setup_script `set -e` 安全修复：`for` 循环补 `done`，`&&` 链改为 `if/fi`
 - 🔗 setup_script 自动维护 `/etc/hosts` 和 SSH config 软链接
