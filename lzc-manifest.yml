@@ -37,7 +37,7 @@ services:
       - LC_ALL=zh_CN.UTF-8
     binds:
       - /lzcapp/documents/{{ .S.DeployUID }}:/home/agent
-      - /lzcsys/var/cache/hermes-studio:/lzcapp/cache
+      - /lzcapp/var/cache:/lzcapp/cache
 
     setup_script: |
       #!/bin/sh
