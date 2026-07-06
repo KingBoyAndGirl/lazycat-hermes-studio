@@ -35,7 +35,6 @@ services:
       - HERMES_ALLOW_ROOT_GATEWAY=1
       - LANG=zh_CN.UTF-8
       - LC_ALL=zh_CN.UTF-8
-      - ROOTFS_CACHE_DIR=/lzcapp/cache
     binds:
       - /lzcapp/documents/{{ .S.DeployUID }}:/home/agent
 
@@ -51,7 +50,7 @@ services:
         localedef -i zh_CN -f UTF-8 zh_CN.UTF-8 2>/dev/null || true
       fi
 
-      ROOTFS="${ROOTFS_CACHE_DIR:-/lzcapp/cache}/rootfs"
+      ROOTFS=/lzcapp/cache/rootfs
       BASE=$ROOTFS/base
       UPPER=$ROOTFS/upper
       DIRS="etc opt root srv usr var"

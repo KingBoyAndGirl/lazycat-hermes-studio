@@ -12,11 +12,6 @@
 - 🆕 新增 group chat baseline/approval/streaming 测试
 - 🛠️ ChatInput 高度设置、Codex 上下文稳定性改进
 
-### 🔧 ROOTFS_CACHE_DIR 环境变量
-- 新增 `ROOTFS_CACHE_DIR` 环境变量（默认 `/lzcapp/cache`），支持按需切换缓存路径
-- 移除 `lzc-build.yml` 中硬编码的 NVMe volume（用户按需设置 compose_override）
-- 兼容多固态硬盘场景：03(nasw) appvar 已在 NVMe 上，无需迁移
-
 ### LPK 增强
 - 🔧 02 机器 NVMe 缓存绑定：rootfs cache 从 SATA HDD 迁移到 `/lzcsys/var/cache/hermes-studio`（首次安装从 50+ 分钟降到 ~30 秒）
 - 🔧 setup_script `set -e` 安全修复：`for` 循环补 `done`，`&&` 链改为 `if/fi`
