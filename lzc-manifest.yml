@@ -154,7 +154,7 @@ services:
           echo "[setup] PATH export added to $PROFILE"
         fi
 
-      # --- dev/debug hosts + SSH config (survives overlay resets) ---
+      # --- dev/debug hosts (survives overlay resets) ---
       if ! grep -q 'canway.heiyu.space' /etc/hosts 2>/dev/null; then
         echo '192.168.124.18 canway.heiyu.space canway' >> /etc/hosts
         echo '[setup] canway hosts added'
@@ -162,13 +162,7 @@ services:
       GW=$(ip route 2>/dev/null | grep default | awk '{print $3}')
       [ -n "$GW" ] && ! grep -q 'nasw.heiyu.space' /etc/hosts 2>/dev/null && echo "$GW nasw.heiyu.space nasw" >> /etc/hosts && echo '[setup] nasw hosts added'
 
-      # SSH config (key lives at /home/agent/.ssh/, config in /root)
-      mkdir -p /root/.ssh /home/agent/.ssh
-      if [ ! -f /root/.ssh/config ]; then
-        printf 'Host nasw\n    HostName nasw.heiyu.space\n    User root\n    IdentityFile /home/agent/.ssh/id_ed25519\n    PreferredAuthentications publickey\n    StrictHostKeyChecking no\n    SendEnv -LANG -LC_ALL\n\nHost canway\n    HostName canway.heiyu.space\n    User root\n    IdentityFile /home/agent/.ssh/id_ed25519\n    PreferredAuthentications publickey\n    StrictHostKeyChecking no\n    SendEnv -LANG -LC_ALL\n' > /root/.ssh/config
-        cp /root/.ssh/config /home/agent/.ssh/config
-        echo '[setup] SSH config created'
-      fi
+
       done
 
 
