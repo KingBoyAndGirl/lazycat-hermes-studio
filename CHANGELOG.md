@@ -1,14 +1,3 @@
-## v2026.07.06-fix-nvme
-
-### 修复
-- 🔧 rootfs cache 绑定从 HDD 改为 NVMe (`/lzcsys/var/cache/hermes-studio`)
-- 解决 02 机器首次安装 `cp -a /usr` (1.5GB) 耗时 50+ 分钟的问题
-
-### 文件变更
-- `lzc-manifest.yml`: binds 改为 `/lzcsys/var/cache/hermes-studio:/lzcapp/cache`
-- `package.yml`: 版本号 `2026.07.06-fix-nvme`
-
-
 ## v2026.07.06
 
 ### 版本信息
@@ -22,6 +11,13 @@
 - 🆕 新增 Ekko Agent runtime（本地 agent 运行时）
 - 🆕 新增 group chat baseline/approval/streaming 测试
 - 🛠️ ChatInput 高度设置、Codex 上下文稳定性改进
+### LPK 增强
+- 🔧 02 机器 NVMe 缓存绑定：rootfs cache 从 SATA HDD 迁移到 `/lzcsys/var/cache/hermes-studio`（首次安装从 50+ 分钟降到 ~30 秒）
+- 🔧 setup_script `set -e` 安全修复：`for` 循环补 `done`，`&&` 链改为 `if/fi`
+- 🔗 setup_script 自动维护 `/etc/hosts` 和 SSH config 软链接
+- 📊 `cp -a /usr` 进度条显示（百分比 + 进度条 + 已拷贝/总量）
+- 🌐 中文 locale 支持（`zh_CN.UTF-8`）
+- 🔑 三密钥 SSH 免密体系（GitHub/NVMe/NAS 独立 ED25519 密钥）
 
 ### 保留修复
 - 🧩 包含上游未合并 PR：
@@ -32,7 +28,9 @@
 ### 变更文件
 - Fork: KingBoyAndGirl/hermes-studio main（merge upstream v0.6.26）
 - Dockerfile：BASE_IMAGE=nousresearch/hermes-agent:latest
-- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:2026.07.06
+- lzc-build.yml：compose_override volumes 绑定 NVMe 缓存
+- setup_script：进度条、locale、hosts/SSH 自动化
+- lzc-manifest.yml：binds 合规路径 + 镜像 tag → wtjking/hermes-web-ui:2026.07.06
 - package.yml：版本号 → 2026.07.06
 
 ## v2026.07.05
@@ -52,7 +50,7 @@
 
 ### 变更文件
 - Dockerfile：BASE_IMAGE 重新拉取（Hermes v0.17.0 → v0.18.0）
-- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:2026.07.05
+- lzc-manifest.yml：binds 合规路径 + 镜像 tag → wtjking/hermes-web-ui:2026.07.05
 - package.yml：版本号 → 2026.07.05
 
 ### 构建信息
