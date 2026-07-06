@@ -126,18 +126,6 @@ services:
       done
       echo "[setup] rootfs: $n dirs overlay (base lower + user upper)"
 
-
-      # --- Migrate /lzcapp/var/home to /home/agent on first boot ---
-      if [ ! -f /home/agent/.migrated-from-var-home ]; then
-        if [ -d /lzcapp/var/home ] && [ "$(ls -A /lzcapp/var/home 2>/dev/null)" ]; then
-          echo "[setup] migrating /lzcapp/var/home -> /home/agent ..."
-          cp -a /lzcapp/var/home/. /home/agent/
-          touch /home/agent/.migrated-from-var-home
-          echo "[setup] migration done"
-        else
-          touch /home/agent/.migrated-from-var-home
-        fi
-      fi
       # --- Bash history: flush after each command (survives container kill) ---
       BASHRC=/home/agent/.bashrc
       if ! grep -q "history -a" "$BASHRC" 2>/dev/null; then
@@ -162,9 +150,5 @@ services:
         echo '[setup] SSH config linked to /home/agent'
       fi
 
-      # --- dev/debug hosts (survives overlay resets) ---
-      fi
-      GW=$(ip route 2>/dev/null | grep default | awk '{print $3}')
-      fi
 
 
