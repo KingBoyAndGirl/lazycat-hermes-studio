@@ -1,3 +1,14 @@
+## v2026.07.06-fix-nvme
+
+### 修复
+- 🔧 rootfs cache 绑定从 HDD 改为 NVMe (`/lzcsys/var/cache/hermes-studio`)
+- 解决 02 机器首次安装 `cp -a /usr` (1.5GB) 耗时 50+ 分钟的问题
+
+### 文件变更
+- `lzc-manifest.yml`: binds 改为 `/lzcsys/var/cache/hermes-studio:/lzcapp/cache`
+- `package.yml`: 版本号 `2026.07.06-fix-nvme`
+
+
 ## v2026.07.06
 
 ### 版本信息
