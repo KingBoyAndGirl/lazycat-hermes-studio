@@ -18,7 +18,7 @@
 - 🔧 setup_script `set -e` 安全修复：`for` 循环补 `done`，`&&` 链改为 `if/fi`
 - 🔗 setup_script 自动维护 `/etc/hosts` 和 SSH config 软链接
 - 📊 `cp -a /usr` 进度条显示（百分比 + 进度条 + 已拷贝/总量）
-- 🌐 中文 locale 支持（`zh_CN.UTF-8`）
+- 🌐 环境变量 LANG=C.UTF-8（移除无效 localedef）
 - 🔑 三密钥 SSH 免密体系（GitHub/NVMe/NAS 独立 ED25519 密钥）
 
 ### 保留修复
