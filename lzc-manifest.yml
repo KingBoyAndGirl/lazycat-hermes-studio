@@ -76,7 +76,17 @@ services:
         for d in $DIRS; do
           if [ -d "/$d" ] && ! [ -L "/$d" ]; then
             rm -rf "$BASE/$d"
-            cp -a "/$d" "$BASE/$d"
+            SRC_SIZE=$(du -sh "/$d" 2>/dev/null | cut -f1)
+            echo "[setup] snapshotting /$d ($SRC_SIZE)..."
+            cp -a "/$d" "$BASE/$d" &
+            CP_PID=$!
+            while kill -0 $CP_PID 2>/dev/null; do
+              DST_SIZE=$(du -sh "$BASE/$d" 2>/dev/null | cut -f1)
+              echo "[setup]   /$d: $DST_SIZE (of ~$SRC_SIZE) copied"
+              sleep 3
+            done
+            wait $CP_PID
+            echo "[setup]   /$d done"
           fi
         done
         echo "$CURRENT_ID" > "$ROOTFS/.image-id"
