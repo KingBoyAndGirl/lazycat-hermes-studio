@@ -57,7 +57,7 @@ services:
 
 
       # --- Image fingerprint: overlay lowerdir (works for latest tag too) ---
-      CURRENT_ID=$(grep " / rw.*overlay" /proc/1/mountinfo | md5sum | cut -d" " -f1)
+      CURRENT_ID=$(md5sum /lzcapp/run/package.yml /lzcapp/run/manifest.yml 2>/dev/null | md5sum | cut -d" " -f1 || echo first)
       STORED_ID=$(cat "$ROOTFS/.image-id" 2>/dev/null)
       # --- First boot or image update: snapshot base ---
       NEED_SNAPSHOT=0
@@ -95,7 +95,7 @@ services:
                   bar=""; for(i=0;i<f;i++) bar=bar"#"; for(i=f;i<w;i++) bar=bar"-";
                   printf "%d %s", p, bar;
                 }')
-              PCTV=$(echo "$PCT" | cut -d" " -f1)
+              PCTV=$(echo "$PCT" | cut -d' ' -f1)
               BAR=$(echo "$PCT" | cut -d" " -f2)
               printf "[setup] [%s] %3d%%  %s/%s  /$d\n" "$BAR" "$PCTV" "$DST_SIZE" "$SRC_SIZE"
             done
