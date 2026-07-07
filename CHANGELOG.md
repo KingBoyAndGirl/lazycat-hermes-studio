@@ -1,3 +1,8 @@
+## v2026.07.07
+
+- **多实例隔离**：rootfs cache 从 compose_override 全局挂载改为 binds per-instance appvar（/lzcapp/var/cache），消除多实例共享 cache 冲突
+- 清理 compose_override 中冗余的 /lzcsys/var/cache/hermes-studio 挂载
+
 ## v2026.07.06
 
 ### 版本信息
