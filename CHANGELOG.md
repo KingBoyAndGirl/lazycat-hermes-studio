@@ -2,7 +2,7 @@
 
 ### 版本信息
 - **Hermes Studio**: v0.6.27（基于上游 EKKOLearnAI/hermes-studio v0.6.27）
-- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.27
+- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.27-carry5-202607082021
 - **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.08.0958.lpk
 
 ### 版本说明
@@ -14,12 +14,12 @@
   - PR #1918：定时任务支持选择 model
   - PR #1903：导出已完成的 coding agent session
 
-> 注：此前已发布测试镜像 v0.6.27 仅叠加其中 4 个 PR（缺 #1995）；本次重新组合构建并覆盖该 tag，纳入全部 5 个未合并修复。
+> 注：此前已发布测试镜像 v0.6.27 仅叠加其中 4 个 PR（缺 #1995）；本次改用唯一组合 tag `v0.6.27-carry5-202607082021`，不再覆盖官方 `v0.6.27`，并纳入全部 5 个未合并修复。
 
 ### 变更文件
 - package.yml：版本号 → 2026.07.08.0958
-- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.27
-- Dockerfile：BASE_IMAGE=nousresearch/hermes-agent:latest + 叠加 5 个未合并 PR 组合构建
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.27-carry5-202607082021
+- Dockerfile：基于官方上游 EKKOLearnAI/hermes-studio v0.6.27 源码（对应上游 Web UI 镜像 ekkoye8888/hermes-web-ui:v0.6.27）+ 叠加 5 个未合并 PR 组合构建；构建基础镜像为 nousresearch/hermes-agent:latest（仅作为运行底座，并非 Web UI 镜像 tag 证据）
 
 ---
 
