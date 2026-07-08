@@ -1,3 +1,28 @@
+## v2026.07.08.2246
+
+### 版本信息
+- **Hermes Studio**: v0.6.27（基于上游 EKKOLearnAI/hermes-studio v0.6.27）
+- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.27-carry5-202607082246
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.08.2246.lpk
+
+### 版本说明
+- 基于上游官方 v0.6.27 源码构建，叠加我们 fork 中仍需携带的 5 个未合并 PR 修复后，重新组合构建并推送至阿里云 ACR 唯一组合 tag；经 `docker manifest inspect` 回读验证，镜像 config digest 与上一步已验证组合镜像一致（`sha256:2529c41aa89c…`），等效证明 5 个未合并修复真实落地。
+- 包含仍需携带的兼容性修复/补丁（5 个上游未合并 PR，已叠加进源码并经代码标记验证）：
+  - PR #1995：workflow coding agent 中止（abort）正确路由
+  - PR #1983：scoped coding agent 继承外部 MCP
+  - PR #1924：文件面板跟随 session workspace（非侵入式方案）
+  - PR #1918：定时任务支持选择 model
+  - PR #1903：导出已完成的 coding agent session
+
+> 注：本版本替换今日旧时间戳版本 v2026.07.08.0958。按唯一组合 tag 规则，未合并 carry PR 非空时不得使用官方 `v0.6.27`、不得复用/覆盖旧组合 tag `v0.6.27-carry5-202607082021`，故本次采用全新唯一组合 tag `v0.6.27-carry5-202607082246`（时间取自本次实际发布时间）。
+
+### 变更文件
+- package.yml：版本号 → 2026.07.08.2246
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.27-carry5-202607082246
+- Dockerfile：基于官方上游 EKKOLearnAI/hermes-studio v0.6.27 源码（对应上游 Web UI 镜像 ekkoye8888/hermes-web-ui:v0.6.27）+ 叠加 5 个未合并 PR 组合构建；构建基础镜像为 nousresearch/hermes-agent:latest（仅作为运行底座，并非 Web UI 镜像 tag 证据）
+
+---
+
 ## v2026.07.08.0958
 
 ### 版本信息
