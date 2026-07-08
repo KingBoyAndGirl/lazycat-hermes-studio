@@ -7,16 +7,19 @@
 
 ### 版本说明
 - 基于上游官方 v0.6.27 源码构建
-- 包含仍需携带的兼容性修复/补丁（4 个未合并 PR，已叠加进源码并经代码标记验证）：
+- 包含仍需携带的兼容性修复/补丁（5 个未合并 PR，已叠加进源码并经代码标记验证）：
+  - PR #1995：workflow coding agent 中止（abort）正确路由
   - PR #1983：scoped coding agent 继承外部 MCP
   - PR #1924：文件面板跟随 session workspace（非侵入式方案）
   - PR #1918：定时任务支持选择 model
   - PR #1903：导出已完成的 coding agent session
 
+> 注：此前已发布测试镜像 v0.6.27 仅叠加其中 4 个 PR（缺 #1995）；本次重新组合构建并覆盖该 tag，纳入全部 5 个未合并修复。
+
 ### 变更文件
 - package.yml：版本号 → 2026.07.08.0958
 - lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.27
-- Dockerfile：BASE_IMAGE=nousresearch/hermes-agent:latest + 叠加 4 个未合并 PR 组合构建
+- Dockerfile：BASE_IMAGE=nousresearch/hermes-agent:latest + 叠加 5 个未合并 PR 组合构建
 
 ---
 
