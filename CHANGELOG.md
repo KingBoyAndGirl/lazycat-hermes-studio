@@ -1,3 +1,23 @@
+## v2026.07.08.0958
+
+### 版本信息
+- **Hermes Studio**: v0.6.26 + scoped coding-agent MCP inheritance 修复
+- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:2026.07.08-scoped-mcp-fix2
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.08.0958.lpk
+
+### 核心修复
+- 修复 Hermes Studio workflow 中 Claude Code / Codex scoped runtime 未继承外部 MCP 配置的问题
+- Claude Code 继承的 HTTP MCP 配置统一规范化为 `type: http`
+- Codex scoped config 对重复 `[mcp_servers.*]` 表做去重，避免 TOML duplicate key 启动失败
+- 修复同一 scoped Codex config 内重复主表覆盖逻辑，保留对应 `http_headers` 子表
+- 已实测 Nowledge Mem managed skills：Hermes / Claude Code / Codex 均可调用 `find_skills` + `report_skill_outcome` 并增长 use_count
+
+### 验证
+- 源码测试：`tests/server/coding-agents-launch.test.ts` 30 passed
+- TypeScript：`npx tsc --noEmit -p packages/server/tsconfig.json` passed
+- Docker manifest：ACR/Docker Hub 镜像 manifest 已验证
+- LazyCat NASW：已安装并通过三节点 workflow 复验
+
 ## v2026.07.07
 
 - **多实例隔离**：rootfs cache 从 compose_override 全局挂载改为 binds per-instance appvar（/lzcapp/var/cache），消除多实例共享 cache 冲突
