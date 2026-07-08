@@ -1,27 +1,29 @@
 ## v2026.07.08.0958
 
 ### 版本信息
-- **Hermes Studio**: v0.6.26 + scoped coding-agent MCP inheritance 修复
-- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:2026.07.08-scoped-mcp-fix2
+- **Hermes Studio**: v0.6.27（基于上游 EKKOLearnAI/hermes-studio v0.6.27）
+- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.27
 - **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.08.0958.lpk
 
-### 核心修复
-- 修复 Hermes Studio workflow 中 Claude Code / Codex scoped runtime 未继承外部 MCP 配置的问题
-- Claude Code 继承的 HTTP MCP 配置统一规范化为 `type: http`
-- Codex scoped config 对重复 `[mcp_servers.*]` 表做去重，避免 TOML duplicate key 启动失败
-- 修复同一 scoped Codex config 内重复主表覆盖逻辑，保留对应 `http_headers` 子表
-- 已实测 Nowledge Mem managed skills：Hermes / Claude Code / Codex 均可调用 `find_skills` + `report_skill_outcome` 并增长 use_count
+### 版本说明
+- 基于上游官方 v0.6.27 源码构建
+- 包含仍需携带的兼容性修复/补丁（4 个未合并 PR，已叠加进源码并经代码标记验证）：
+  - PR #1983：scoped coding agent 继承外部 MCP
+  - PR #1924：文件面板跟随 session workspace（非侵入式方案）
+  - PR #1918：定时任务支持选择 model
+  - PR #1903：导出已完成的 coding agent session
 
-### 验证
-- 源码测试：`tests/server/coding-agents-launch.test.ts` 30 passed
-- TypeScript：`npx tsc --noEmit -p packages/server/tsconfig.json` passed
-- Docker manifest：ACR/Docker Hub 镜像 manifest 已验证
-- LazyCat NASW：已安装并通过三节点 workflow 复验
+### 变更文件
+- package.yml：版本号 → 2026.07.08.0958
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.27
+- Dockerfile：BASE_IMAGE=nousresearch/hermes-agent:latest + 叠加 4 个未合并 PR 组合构建
+
+---
 
 ## v2026.07.07
 
 - **多实例隔离**：rootfs cache 从 compose_override 全局挂载改为 binds per-instance appvar（/lzcapp/var/cache），消除多实例共享 cache 冲突
-- 清理 compose_override 中冗余的 /lzcsys/var/cache/hermes-studio 挂载
+- 清理 compose_override 中冗余的 rootfs 缓存挂载
 
 ## v2026.07.06
 
@@ -39,12 +41,12 @@
 
 ### LPK 增强
 - 🚀 启动优化：指纹改为 package.yml+manifest.yml，正常重启跳过 cp（~30秒 → 瞬间）
-- 🔧 02 机器 NVMe 缓存绑定：rootfs cache 从 SATA HDD 迁移到 `/lzcsys/var/cache/hermes-studio`（首次安装从 50+ 分钟降到 ~30 秒）
+- 🔧 rootfs 缓存绑定到高速 NVMe 缓存盘，首次安装快照时间从 50+ 分钟降到 ~30 秒
 - 🔧 setup_script `set -e` 安全修复：`for` 循环补 `done`，`&&` 链改为 `if/fi`
 - 🔗 setup_script 自动维护 `/etc/hosts` 和 SSH config 软链接
 - 📊 `cp -a /usr` 进度条显示（百分比 + 进度条 + 已拷贝/总量）
 - 🌐 环境变量 LANG=C.UTF-8（移除无效 localedef）
-- 🔑 三密钥 SSH 免密体系（GitHub/NVMe/NAS 独立 ED25519 密钥）
+- 🔑 多密钥 SSH 免密体系（不同服务使用独立 ED25519 密钥）
 
 ### 保留修复
 - 🧩 包含上游未合并 PR：
