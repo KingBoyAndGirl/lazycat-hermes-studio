@@ -1,3 +1,26 @@
+## v2026.07.10.1343
+
+### 版本信息
+- **Hermes Studio**: v0.6.28（基于上游 EKKOLearnAI/hermes-studio v0.6.28）
+- **Docker 镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.28-carry2-202607101256
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.10.1343.lpk
+
+### 版本说明
+- 基于上游官方 v0.6.28 源码构建，叠加我们 fork 中仍需携带的 2 个未合并 PR 修复后，重新组合构建并推送至阿里云 ACR 唯一组合 tag；经 `docker manifest inspect` 回读验证，镜像 config digest 为 `sha256:a3bc61a2e451a2cc826464f1347793194563f3238ecfaf5b524f9e685d7efa31`，等效证明 2 个未合并修复真实落地（完整 TypeScript/Vite 构建通过，修复代码全部编译进镜像）。
+- 本次仅叠加 2 个仍未合并的 carry 修复（已从上游分支 cherry-pick 真实修复文件、剔除污染提交——#2011 分支自带的 ESP32 firmware.bin/main.cpp 与 MCU speech segmenter 改动、#1924 分支自带的版本号回退与 jobs.ts/model&provider 删除均未带入）：
+  - PR #2011：抑制 workspace diff 中的零行变更（zero-line diffs），避免 +0/-0 噪音卡片
+  - PR #1924：文件面板跟随 session workspace（规范化 session workspace 文件路径，非侵入式方案）
+- 移除说明：#2003（隐藏 SQLite sidecar）、#1918（定时任务 model 选择）、#1903（导出 coding agent session）已并入上游 v0.6.28，故从 carry 集合移除，计数由上一版 4 降为 2。
+
+> 注：按唯一组合 tag 规则，未合并 carry PR 非空时不得使用官方 `v0.6.28`、不得复用/覆盖旧组合 tag，故本次采用全新唯一组合 tag `v0.6.28-carry2-202607101256`（时间取自本次实际发布时间 2026.07.10.1343）。
+
+### 变更文件
+- package.yml：版本号 → 2026.07.10.1343
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.28-carry2-202607101256
+- Dockerfile：基于官方上游 EKKOLearnAI/hermes-studio v0.6.28 源码（对应上游 Web UI 镜像 ekkoye8888/hermes-web-ui:v0.6.28）+ 仅叠加 2 个未合并 PR 的真实修复组合构建；构建基础镜像为 nousresearch/hermes-agent:latest（仅作为运行底座，并非 Web UI 镜像 tag 证据）
+
+---
+
 ## v2026.07.09.1152
 
 ### 版本信息
