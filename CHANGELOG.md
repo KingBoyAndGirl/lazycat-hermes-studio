@@ -1,3 +1,26 @@
+## v2026.07.10.2357
+
+### 版本信息
+- **Hermes Studio**: v0.6.28（基于上游 EKKOLearnAI/hermes-studio v0.6.28）
+- **镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.28-carry3-202607102357
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.10.2357.lpk
+
+### 版本说明
+- 基于上游官方 v0.6.28 源码构建，叠加我们 fork 中仍需携带的 3 个未合并 PR 修复后，重新组合构建并推送至阿里云 ACR 唯一组合 tag；经 manifest 回读验证，镜像 config digest 为 sha256:c368e1c849690c99637f3cc25f868919bf6e24549479f55bdb340a6acafc458f，等效证明 3 个未合并修复真实落地（完整构建通过，修复代码全部编译进镜像）。
+- 本次 carry 集合由上一版 2 个扩展为 3 个（新增 #2023）；仅叠加未合并 PR 的真实修复文件、剔除污染提交：
+  - PR #2023：workflow 节点 toolset/capability 策略强制收敛（enforce exact node capability policies），避免节点能力面被回宽
+  - PR #2011：抑制 workspace diff 中的零行变更（zero-line diffs），避免 +0/-0 噪音卡片
+  - PR #1924：文件面板跟随 session workspace（规范化 session workspace 文件路径，非侵入式方案）
+- 移除说明：#2003（隐藏 SQLite sidecar）、#1918（定时任务 model 选择）、#1903（导出 coding agent session）已并入上游 v0.6.28，故从 carry 集合移除。
+
+> 注：按唯一组合 tag 规则，未合并 carry PR 非空时不得使用官方 v0.6.28、不得复用/覆盖旧组合 tag，故本次采用全新唯一组合 tag v0.6.28-carry3-202607102357（时间取自本次实际发布时间 2026.07.10.2357）。
+
+### 变更文件
+- package.yml：版本号 → 2026.07.10.2357
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.28-carry3-202607102357
+
+---
+
 ## v2026.07.10.1343
 
 ### 版本信息
