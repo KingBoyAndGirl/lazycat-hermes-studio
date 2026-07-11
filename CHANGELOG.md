@@ -1,3 +1,24 @@
+## v2026.07.11.0823
+
+### 版本信息
+- **Hermes Studio**: v0.6.28（基于上游 EKKOLearnAI/hermes-studio v0.6.28）
+- **镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.28-carry3-202607110823
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.11.0823.lpk
+
+### 版本说明
+- 基于上游官方 v0.6.28 源码构建，叠加我们 fork 中仍需携带的 3 个未合并 PR 修复后，重新组合构建并推送至阿里云容器镜像服务唯一组合 tag；经 `docker manifest inspect` 回读验证，镜像 config digest 为 `sha256:1aaa9d47ee4dfac3e0247bb6e7ab16ab254b46c49083b92ac816b23281eef2c8`，等效证明 3 个未合并修复真实落地（完整 TypeScript/Vite 构建通过，修复代码全部编译进镜像）。
+- 本次 carry 集合与上一版一致，共 3 个未合并 PR 的真实修复文件（已剔除各分支自带的污染提交）：
+  - PR #2023：workflow 节点 toolset/capability 策略强制收敛（enforce exact node capability policies），避免节点能力面被回宽
+  - PR #2011：抑制 workspace diff 中的零行变更（zero-line diffs），避免 +0/-0 噪音卡片
+  - PR #1924：文件面板跟随 session workspace（规范化 session workspace 文件路径，非侵入式方案）
+- 相对上一版 v2026.07.10.2357：PR #2023 在当前发布时刻新增 1 个收敛提交（preserve policy during final context refresh），故采用全新唯一组合 tag `v0.6.28-carry3-202607110823`（时间取自本次实际发布时间 2026.07.11.0823）。
+
+### 变更文件
+- package.yml：版本号 → 2026.07.11.0823
+- lzc-manifest.yml：镜像 tag → wtjking/hermes-web-ui:v0.6.28-carry3-202607110823
+
+---
+
 ## v2026.07.10.2357
 
 ### 版本信息
