@@ -1,3 +1,23 @@
+## v2026.07.16.1946
+
+### 版本信息
+- **Hermes Studio**: v0.6.30（基于上游正式发布）
+- **镜像**: `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.30-carry3-202607161946`
+- **LPK 包**: `community.lazycat.app.hermes-studio-v2026.07.16.1946.lpk`
+
+### 版本说明
+- 基于上游 v0.6.30，叠加冻结的开放 carry PR：
+  - PR #1924
+  - PR #2011
+  - PR #2082
+- 已在隔离 Node 24 环境完成依赖安装、carry 声明测试、harness、全量覆盖率与生产构建；LPK 内嵌镜像引用为本次唯一 tag。
+
+### 变更文件
+- package.yml：版本号 → 2026.07.16.1946
+- lzc-manifest.yml：镜像 tag → `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.30-carry3-202607161946`
+
+---
+
 ## v2026.07.11.0823
 
 ### 版本信息
