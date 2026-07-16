@@ -1,3 +1,26 @@
+## v2026.07.16.1139
+
+### 版本信息
+- **Hermes Studio**: v0.6.30（基于上游 EKKOLearnAI/hermes-studio v0.6.30）
+- **镜像**: registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.30-carry3-202607161139
+- **LPK 包**: community.lazycat.app.hermes-studio-v2026.07.16.1139.lpk
+
+### 版本说明
+- 基于上游稳定版 v0.6.30 exact commit `db9e63ccd81d7dfe202d5db5811456bf5b7ab7df` 构建，叠加 3 个当前仍未合并且 checks 全绿的 carry PR 净补丁；全部 6 种补丁排列均得到唯一 integration tree `e54f926383361d98e35cdd76b01c486e29815b37`。
+- carry PR：
+  - PR #1924：文件面板跟随 session workspace（non-invasive approach）
+  - PR #2011：抑制 zero-line workspace diff 噪音
+  - PR #2082：将 workspace diff 归属到对应 assistant turn
+- 完整 Node 24 质量门通过：carry 定向测试 105/105、全量测试 2580 passed / 2 skipped、`harness:check` 和 production build 均通过。
+- ACR 推送后独立回读通过：config digest `sha256:f36a7f5c108836f829b4478ec55e0ea2e986c90b6d1080510170f53ecab035d4`；远端镜像内 395 个 `dist` 文件及 28 个 carry 源文件与本次构建证据一致。
+
+### 变更文件
+- package.yml：版本号更新为 2026.07.16.1139，homepage 更新为当前 canonical repository。
+- lzc-manifest.yml：Hermes Web UI 镜像更新为 `v0.6.30-carry3-202607161139`。
+- CHANGELOG.md：新增本次发布的来源、carry、质量门和镜像回读证据。
+
+---
+
 ## v2026.07.11.0823
 
 ### 版本信息
