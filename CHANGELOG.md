@@ -1,3 +1,21 @@
+## v2026.07.18.0355
+
+### 版本信息
+- **Hermes Studio**: v0.6.30（构建基线按冻结输入与 Carry 契约确定）
+- **镜像**: `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.30-carry1-202607180355`
+- **LPK 包**: `community.lazycat.app.hermes-studio-v2026.07.18.0355.lpk`
+
+### 版本说明
+- 发布输入通过 REST/GraphQL 双投影冻结；源码组合、隔离 Node 24 质量门、镜像与 LPK 均按不可变证据回读。
+- 本次 Carry：
+  - `wtj-0527/hermes-studio#13` @ `9a3227523a6c5bf13559c5895a0db6b9dab5f68e`
+
+### 变更文件
+- package.yml：版本号 → 2026.07.18.0355
+- lzc-manifest.yml：镜像 → `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.30-carry1-202607180355`
+
+---
+
 ## v2026.07.16.1946
 
 ### 版本信息
