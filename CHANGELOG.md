@@ -1,3 +1,20 @@
+## v2026.07.19.1930
+
+### 版本信息
+- **Hermes Studio**: v0.6.31（冻结上游发布基线并叠加 1 个已验证 Carry）
+- **镜像**: `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.31-carry1-202607191930`
+- **LPK 包**: `community.lazycat.app.hermes-studio-v2026.07.19.1930.lpk`
+
+### 版本说明
+- 本次组合镜像包含已通过质量门的 workflow bridge readiness 修复。
+- 运行镜像使用本次唯一 tag，并已回读 linux/amd64 manifest 与 config digest。
+
+### 变更文件
+- package.yml：版本号 → 2026.07.19.1930
+- lzc-manifest.yml：镜像 → `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.31-carry1-202607191930`
+
+---
+
 ## v2026.07.19.0958
 
 ### 版本信息
