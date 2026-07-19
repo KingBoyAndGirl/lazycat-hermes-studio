@@ -1,3 +1,20 @@
+## v2026.07.20.0050
+
+### 版本信息
+- **Hermes Studio**: v0.6.31（沿用已验证的正式运行镜像）
+- **镜像**: `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.31-carry1-202607191930`
+- **LPK 包**: `community.lazycat.app.hermes-studio-v2026.07.20.0050.lpk`
+
+### 版本说明
+- 为 Hermes 文件写入安全策略显式配置 `/opt/data` 与 `/home/agent/.hermes/workspace/` 两个允许根目录。
+- 两个根目录通过 Linux 路径分隔符 `:` 写入 `HERMES_WRITE_SAFE_ROOT`。
+
+### 变更文件
+- package.yml：测试包版本号 → 2026.07.20.0050
+- lzc-manifest.yml：新增 `HERMES_WRITE_SAFE_ROOT=/opt/data:/home/agent/.hermes/workspace/`
+
+---
+
 ## v2026.07.19.1930
 
 ### 版本信息
