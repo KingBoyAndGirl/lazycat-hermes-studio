@@ -1,3 +1,20 @@
+## v2026.07.19.0958
+
+### 版本信息
+- **Hermes Studio**: v0.6.31（冻结集成源码）
+- **镜像**: `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.31-carry1-202607190958`
+- **LPK 包**: `community.lazycat.app.hermes-studio-v2026.07.19.0958.lpk`
+
+### 版本说明
+- 基于冻结集成源码构建，包含 workflow bridge handoff readiness 修复。
+- 已完成 TypeScript 检查、相关 Vitest 测试与生产构建；运行镜像为本次唯一 linux/amd64 tag，并已回读 manifest。
+
+### 变更文件
+- package.yml：版本号 → 2026.07.19.0958
+- lzc-manifest.yml：镜像 → `registry.cn-shanghai.aliyuncs.com/wtjking/hermes-web-ui:v0.6.31-carry1-202607190958`
+
+---
+
 ## v2026.07.19.0311
 
 ### 版本信息
